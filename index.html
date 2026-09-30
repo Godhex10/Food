@@ -26,13 +26,14 @@
     /* everything is sized off the viewport so the page never scrolls */
     --pad-x:clamp(16px,4vw,52px);
     --pad-y:clamp(12px,3vh,36px);
+    --nav-h:60px;
     --plate:min(46vh,34vw);
     --card-w:clamp(280px,24vw,320px);
     --thumb:clamp(48px,9vh,84px);
     --slot:calc(var(--thumb) + clamp(48px,6vw,78px));
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  html{scroll-behavior:smooth;scroll-padding-top:76px}
   body{
     overflow-x:hidden;
     font-family:var(--font);
@@ -50,10 +51,10 @@
     position:relative;
     height:100vh;height:100dvh;
     max-width:1440px;margin:0 auto;
-    padding:calc(var(--pad-y) + env(safe-area-inset-top,0px)) var(--pad-x) calc(var(--pad-y) + env(safe-area-inset-bottom,0px));
+    padding:calc(var(--nav-h) + var(--pad-y) + env(safe-area-inset-top,0px)) var(--pad-x) calc(var(--pad-y) + env(safe-area-inset-bottom,0px));
     display:grid;
     grid-template-columns:minmax(0,1fr);
-    grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-rows:minmax(0,1fr) auto;
     row-gap:clamp(6px,2vh,22px);
     overflow:hidden;
   }
@@ -62,12 +63,9 @@
   .swoosh::before{width:75vw;height:24vh;left:-8vw;top:34vh;transform:rotate(-24deg)}
   .swoosh::after{width:34vw;height:16vh;left:44vw;top:3vh;transform:rotate(-24deg);opacity:.7}
 
-  /* ---------- Top bar ---------- */
-  .topbar{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center}
+  /* ---------- Brand ---------- */
   .brand{font-weight:900;font-size:15px;letter-spacing:.18em;color:var(--ink-soft)}
   .brand b{color:var(--ink)}
-  .topbar nav{display:flex;gap:22px}
-  .topbar svg{width:24px;height:24px;stroke:var(--ink);stroke-width:2.2;fill:none;stroke-linecap:round}
 
   /* ---------- Left vertical indicator ---------- */
   .indicator{
@@ -255,21 +253,45 @@
     :root{--plate:min(44vh,40vw)}
     .hero{grid-template-columns:var(--plate) minmax(0,1fr);grid-template-rows:auto auto;align-content:center;row-gap:2vh}
     .plate-wrap{grid-row:1 / span 2}
-    .card{margin-right:0;border-radius:18px;padding:10px 12px 10px 14px;max-width:440px}
     .actions{margin-top:2vh}
   }
-  /* compact card: store on the left, rating pill on the right */
+  /* ---------- Reviews button (phones & tablets) ---------- */
+  .rv-btn,.card:not(.open) .card-close{display:none}
+  .rv-btn{
+    align-items:center;gap:12px;margin-top:clamp(12px,2.4vh,22px);
+    height:52px;padding:0 16px 0 6px;border-radius:26px;
+    background:var(--card);box-shadow:0 12px 30px rgba(40,30,20,.1);
+    font-weight:800;font-size:14px;color:var(--ink);text-align:left;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .rv-btn:active{transform:scale(.97)}
+  .rv-btn .rv-num{display:flex;align-items:center;gap:5px;height:40px;padding:0 12px;border-radius:20px;background:var(--pink-soft);font-size:16px;font-weight:900}
+  .rv-btn .rv-num svg{width:14px;height:14px;fill:#e0457b}
+  .rv-btn small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);margin-top:1px}
+  .rv-btn > svg{width:16px;height:16px;fill:none;stroke:var(--ink-soft);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;margin-left:4px}
+  .card-scrim{position:fixed;inset:0;z-index:65;background:rgba(20,18,16,.4);backdrop-filter:blur(2px);animation:fade .3s}
+  @keyframes cardUp{from{transform:translateY(100%)}}
   @media (max-width:980px) and (min-aspect-ratio:3/4), (max-aspect-ratio:3/4){
-    .card .tabs,.card .card-foot,.card .facts,.card .review,.card .ingredients{display:none!important}
-    #panel{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    #overview{display:block!important}
-    .card .store{margin:0;min-width:0}
-    .card .store-name{font-size:15px}
-    .card .logo{width:38px;border-radius:12px;font-size:13px}
-    .card .rating{padding:7px 10px;gap:8px;border-radius:12px}
-    .card .rating .num{font-size:22px}
-    .card .stars svg{width:11px;height:11px}
-    .card .rating .count{font-size:10px}
+    .rv-btn{display:inline-flex}
+    .card:not(.open){display:none}
+    .card.open{
+      position:fixed;left:0;right:0;bottom:0;z-index:66;
+      width:100%;max-width:520px;margin:0 auto;max-height:88dvh;
+      border-radius:28px 28px 0 0;
+      padding:30px 22px calc(22px + env(safe-area-inset-bottom,0px));
+      background:#faf9f7;text-align:left;
+      box-shadow:0 -20px 60px rgba(0,0,0,.2);
+      animation:cardUp .45s cubic-bezier(.3,.8,.25,1);
+    }
+    .card.open::before{content:"";position:absolute;top:10px;left:50%;width:40px;height:4px;border-radius:2px;background:rgba(0,0,0,.14);transform:translateX(-50%)}
+    .card.open .card-close{display:grid;position:absolute;top:18px;right:18px;z-index:2}
+    .card.open .tabs{margin-right:54px}
+    .card.open .rating{padding:14px 16px}
+    .card.open .rating .num{font-size:40px}
+    .card.open .stars svg{width:16px;height:16px}
+    .card.open .review{font-size:14px}
+    .card.open .ingredients{font-size:14px}
+    .card.open .add{height:44px;padding:0 20px;font-size:14px}
   }
 
   /* ---------- Phones / portrait: stack, still one screen ---------- */
@@ -286,8 +308,6 @@
     .title .l2{font-size:min(13cqw,7vh)}
     .actions,.rank{justify-content:center}
     .actions{margin-top:1.4vh}
-    .card{margin:0;border-radius:16px;width:min(100%,400px);padding:10px 10px 10px 12px;text-align:left}
-    .card .store-meta .loc{display:none}
     .carousel{justify-self:center;margin-left:0;gap:2px}
     .viewport{width:calc(3 * var(--slot))}
   }
@@ -295,7 +315,6 @@
   @media (max-aspect-ratio:3/4) and (max-height:720px){
     :root{--plate:min(58vw,28vh);--thumb:clamp(40px,6.5vh,56px)}
     .actions{display:none}
-    .card{max-height:none}
   }
   /* very short screens (landscape phones) */
   @media (max-height:520px) and (min-aspect-ratio:3/4){
@@ -337,9 +356,6 @@
   .icon-btn svg{width:18px;height:18px;fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
 
   /* hero top bar extras */
-  .topbar nav{align-items:center}
-  .toplink{font-size:14px;font-weight:700;color:var(--ink-soft);padding:6px 4px}
-  .toplink:hover{color:var(--ink)}
   .cart-btn{position:relative}
   .badge{
     position:absolute;top:-4px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;
@@ -354,22 +370,24 @@
   @keyframes cue{60%{transform:translate(-50%,9px);opacity:0}100%{opacity:0}}
   @media (min-height:760px) and (min-aspect-ratio:3/4){.scroll-cue{display:block}}
 
-  /* sticky navbar */
+  /* site header (same on every part of the page) */
   .navbar{
-    position:fixed;inset:0 0 auto;z-index:40;
+    position:fixed;inset:0 0 auto;z-index:40;padding-top:env(safe-area-inset-top,0px);
     background:rgba(236,234,231,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     box-shadow:0 1px 0 var(--line);
-    transform:translateY(-110%);transition:transform .4s cubic-bezier(.3,.8,.25,1);
   }
-  .navbar.show{transform:none}
-  .navbar-in{display:flex;align-items:center;gap:24px;height:66px}
-  .nav-links{display:flex;gap:26px;margin:0 auto;font-size:14px;font-weight:700;color:var(--ink-soft)}
+  .navbar-in{display:flex;align-items:center;gap:24px;height:var(--nav-h);max-width:1440px}
+  .nav-brand{font-size:14px}
+  .nav-links{display:flex;gap:24px;margin:0 auto;font-size:13.5px;font-weight:700;color:var(--ink-soft)}
+  .nav-links a{transition:color .2s}
   .nav-links a:hover{color:var(--ink)}
-  .nav-actions{display:flex;align-items:center;gap:10px;margin-left:auto}
-  .nav-actions > button:first-child{width:40px;height:40px;display:grid;place-items:center}
-  .nav-actions svg{width:22px;height:22px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .cart-pill{display:flex;align-items:center;gap:8px;height:42px;padding:0 16px 0 12px;border-radius:21px;background:var(--ink);color:#fff;font-size:13px;font-weight:700}
-  .cart-pill svg{stroke:#fff;width:19px;height:19px}
+  .nav-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+  .nav-actions > button:first-child{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;transition:background .2s}
+  .nav-actions > button:first-child:hover{background:rgba(0,0,0,.05)}
+  .nav-actions svg{width:18px;height:18px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .cart-pill{display:flex;align-items:center;gap:7px;height:36px;padding:0 14px 0 11px;border-radius:18px;background:var(--ink);color:#fff;font-size:12.5px;font-weight:700;transition:background .2s}
+  .cart-pill:hover{background:#000}
+  .cart-pill svg{stroke:#fff;width:16px;height:16px}
 
   /* how it works */
   .how{padding-top:clamp(40px,6vw,70px)}
@@ -604,7 +622,7 @@
 
   /* home page responsive */
   @media (max-width:980px){
-    .toplink,.nav-links{display:none}
+    .nav-links{display:none}
     .how-grid,.combo-grid{grid-template-columns:1fr}
     .combo{min-height:210px}
     .reviews,.about{grid-template-columns:1fr}
@@ -641,35 +659,10 @@
     .combo h3{max-width:62%;font-size:19px}
     .combo .combo-plate{width:170px;height:170px;right:-46px}
     .stats b{font-size:19px}
-    .cart-pill > span{display:none}
-    .cart-pill{padding:0 12px}
+    .cart-pill .pill-total{display:none}
+    .cart-pill{padding:0 13px 0 11px}
     .foot-grid{grid-template-columns:1fr}
     .toast{bottom:16px}
-  }
-  /* phone bottom bar */
-  .tabbar{display:none}
-  @media (max-width:760px){
-    :root{--tabbar:calc(64px + env(safe-area-inset-bottom,0px))}
-    .tabbar{
-      position:fixed;left:0;right:0;bottom:0;z-index:50;
-      display:grid;grid-template-columns:repeat(5,1fr);align-items:center;
-      height:var(--tabbar);padding:0 6px env(safe-area-inset-bottom,0px);
-      background:rgba(250,249,247,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-      box-shadow:0 -1px 0 var(--line),0 -10px 30px rgba(0,0,0,.05);
-    }
-    .tabbar a,.tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:100%;font-size:10.5px;font-weight:700;color:var(--ink-faint);transition:color .2s}
-    .tabbar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-    .tabbar .on{color:var(--ink)}
-    .tabbar .tab-cart{
-      position:relative;justify-self:center;width:56px;height:56px;border-radius:50%;margin-top:-28px;
-      background:var(--ink);color:#fff;box-shadow:0 12px 26px rgba(0,0,0,.28),0 0 0 5px rgba(250,249,247,.92);
-    }
-    .tabbar .tab-cart svg{width:24px;height:24px}
-    .tabbar .tab-cart .badge{top:-2px;right:-2px;box-shadow:0 0 0 2px #faf9f7}
-    body{padding-bottom:var(--tabbar)}
-    .stage{height:calc(100vh - var(--tabbar));height:calc(100dvh - var(--tabbar))}
-    .topbar .cart-btn,.navbar .cart-pill{display:none}
-    .toast{bottom:calc(var(--tabbar) + 14px)}
   }
   @media (prefers-reduced-motion:reduce){
     *{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
@@ -678,20 +671,26 @@
 </style>
 </head>
 <body>
+<!-- ============ Site header (always visible) ============ -->
+<header class="navbar" id="navbar">
+  <div class="wrap navbar-in">
+    <a href="#top" class="brand nav-brand" data-brand></a>
+    <nav class="nav-links">
+      <a href="#menu">Menu</a><a href="#combos">Combos</a><a href="#reviews">Reviews</a><a href="#about">About</a><a href="#delivery">Delivery</a>
+    </nav>
+    <div class="nav-actions">
+      <button aria-label="Search the menu" data-search><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg></button>
+      <button class="cart-pill" data-cart aria-label="Open cart">
+        <svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <b data-count>0</b><span class="pill-total">&nbsp;·&nbsp;<span data-total>₦0</span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
 <main class="stage" id="top">
   <div class="swoosh" aria-hidden="true"></div>
   <div class="indicator" id="indicator" aria-hidden="true"></div>
-
-  <header class="topbar">
-    <span class="brand" id="brand"></span>
-    <nav>
-      <a class="toplink" href="#menu">Menu</a>
-      <a class="toplink" href="#combos">Combos</a>
-      <a class="toplink" href="#delivery">Delivery</a>
-      <button aria-label="Search the menu" data-search><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg></button>
-      <button class="cart-btn" aria-label="Open cart" data-cart><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="badge" data-count>0</span></button>
-    </nav>
-  </header>
 
   <section class="hero">
     <div class="plate-wrap" id="plateWrap" aria-live="polite"></div>
@@ -705,9 +704,15 @@
         <button><svg viewBox="0 0 10 12"><path d="M0 0 10 6 0 12z"/></svg>Play video</button>
         <button id="orderFood"><svg viewBox="0 0 12 12"><path d="M1 9h10v1.5H1zM6 2.5A4.5 4.5 0 0 1 10.5 8h-9A4.5 4.5 0 0 1 6 2.5z"/></svg>See full menu</button>
       </div>
+      <button class="rv-btn" id="reviewsBtn" aria-haspopup="dialog">
+        <span class="rv-num"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.6l-6.2 3.6 1.6-6.9L2.1 9.6l7-.7z"/></svg><b id="rvBtnScore"></b></span>
+        <span>Reviews &amp; details<small id="rvBtnCount"></small></span>
+        <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
 
-    <aside class="card">
+    <aside class="card" aria-label="Dish reviews and details">
+      <button class="icon-btn card-close" data-card-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <div class="tabs" role="tablist">
         <button role="tab" aria-selected="true" data-tab="overview">Overview</button>
         <button role="tab" aria-selected="false" data-tab="ingredients">Ingredients</button>
@@ -754,23 +759,6 @@
 
   <a class="scroll-cue" href="#how" aria-label="Scroll to see more"><span></span></a>
 </main>
-
-<!-- ============ Sticky header (appears after the hero) ============ -->
-<header class="navbar" id="navbar">
-  <div class="wrap navbar-in">
-    <a href="#top" class="brand nav-brand" data-brand></a>
-    <nav class="nav-links">
-      <a href="#menu">Menu</a><a href="#combos">Combos</a><a href="#reviews">Reviews</a><a href="#about">About</a><a href="#delivery">Delivery</a>
-    </nav>
-    <div class="nav-actions">
-      <button aria-label="Search the menu" data-search><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg></button>
-      <button class="cart-pill" data-cart aria-label="Open cart">
-        <svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
-        <span><b data-count>0</b> · <span data-total>₦0</span></span>
-      </button>
-    </div>
-  </div>
-</header>
 
 <!-- ============ How it works ============ -->
 <section class="section how" id="how">
@@ -937,6 +925,7 @@
 
 <!-- ============ Cart drawer ============ -->
 <div class="scrim" id="scrim" hidden></div>
+<div class="card-scrim" id="cardScrim" hidden></div>
 <aside class="drawer" id="cart" aria-label="Your cart" aria-hidden="true">
   <div class="drawer-head">
     <h3>Your order</h3>
@@ -982,15 +971,6 @@
     </div>
   </div>
 </div>
-
-<!-- ============ Phone bottom bar ============ -->
-<nav class="tabbar" id="tabbar" aria-label="Quick navigation">
-  <a href="#top" data-tab="top" class="on"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg><span>Home</span></a>
-  <a href="#menu" data-tab="menu"><svg viewBox="0 0 24 24"><path d="M7 3v5a2 2 0 0 1-4 0V3M5 8v13M17 3c-2 0-3 2.5-3 5.5S15 12 17 12m0-9v18"/></svg><span>Menu</span></a>
-  <button class="tab-cart" data-cart aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="badge" data-count>0</span></button>
-  <button data-search><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg><span>Search</span></button>
-  <button id="ordersTab"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Orders</span></button>
-</nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -1174,6 +1154,8 @@ function renderInfo(){
   $("score").textContent = d.score.toFixed(1);
   $("stars").style.setProperty("--r", d.score);
   $("reviews").textContent = d.reviews.toLocaleString() + " reviews";
+  $("rvBtnScore").textContent = d.score.toFixed(1);
+  $("rvBtnCount").textContent = d.reviews.toLocaleString() + " reviews · " + d.time + " · " + naira(d.price);
   $("price").textContent = naira(d.price);
   $("time").textContent = d.time;
   $("review").textContent = d.review;
@@ -1282,13 +1264,12 @@ document.querySelectorAll(".votes button").forEach(b=>b.addEventListener("click"
   b.setAttribute("aria-pressed", String(!on));
 }));
 $("orderFood").addEventListener("click", ()=> $("menu").scrollIntoView({behavior: reduce ? "auto" : "smooth"}));
-$("heroAdd").addEventListener("click", ()=> openSheet(dishes[current].id));
+$("heroAdd").addEventListener("click", ()=>{ closeCard(true); openSheet(dishes[current].id); });
 
 /* ---------- Store + today ---------- */
 const STAR = `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.6l-6.2 3.6 1.6-6.9L2.1 9.6l7-.7z"/></svg>`;
 $("stars").innerHTML = `<div class="row base">${STAR.repeat(5)}</div><div class="row fill">${STAR.repeat(5)}</div>`;
 const brandHTML = STORE.name.toUpperCase().replace(/^(\S+)/,"<b>$1</b>");
-$("brand").innerHTML = brandHTML;
 document.querySelectorAll("[data-brand]").forEach(el => el.innerHTML = brandHTML);
 document.querySelectorAll("[data-name]").forEach(el => el.textContent = STORE.name);
 document.querySelectorAll("[data-address]").forEach(el => el.textContent = STORE.address);
@@ -1310,7 +1291,6 @@ const smooth = () => ({behavior: reduce ? "auto" : "smooth"});
 let heroVisible = true;
 new IntersectionObserver(([e]) => {
   heroVisible = e.intersectionRatio > .35;
-  $("navbar").classList.toggle("show", e.intersectionRatio < .15);
 }, { threshold:[0,.15,.35,.6,1] }).observe(stage);
 
 /* ---------- Menu grid ---------- */
@@ -1532,7 +1512,7 @@ $("sheetAdd").addEventListener("click", () => {
   addToCart(sheetId, readSel(), $("sheetNote").value.trim(), sheetQty);
   closeSheet();
 });
-document.addEventListener("keydown", e => { if(e.key === "Escape"){ closeSheet(); closeCart(); } });
+document.addEventListener("keydown", e => { if(e.key === "Escape"){ closeSheet(); closeCart(); closeCard(); } });
 
 /* ---------- toast ---------- */
 let toastTimer = null;
@@ -1544,15 +1524,28 @@ function toast(msg, withCart = true){
   toastTimer = setTimeout(() => $("toast").classList.remove("show"), 3200);
 }
 
-/* ---------- phone bottom bar ---------- */
-$("ordersTab").addEventListener("click", () => toast("Your orders will show here once checkout is live", false));
-function markTab(){
-  const menu = $("menu").getBoundingClientRect(), mid = innerHeight / 2;
-  const tab = heroVisible ? "top" : (menu.top < mid && menu.bottom > mid) ? "menu" : "";
-  document.querySelectorAll("#tabbar [data-tab]").forEach(a => a.classList.toggle("on", a.dataset.tab === tab));
+/* ---------- hero card as a slide-up sheet on phones & tablets ---------- */
+const heroCard = document.querySelector(".hero .card"), heroCardHome = heroCard.parentElement;
+function openCard(){
+  lastFocus = document.activeElement;
+  document.body.appendChild(heroCard);            // lift it out of the hero so it sits above everything
+  heroCard.classList.add("open");
+  heroCard.setAttribute("role","dialog"); heroCard.setAttribute("aria-modal","true");
+  $("cardScrim").hidden = false; lock(true);
+  heroCard.querySelector("[data-card-close]").focus();
 }
-let tabTick = false;
-addEventListener("scroll", () => { if(!tabTick){ tabTick = true; requestAnimationFrame(() => { markTab(); tabTick = false; }); } }, {passive:true});
+function closeCard(silent){
+  if(!heroCard.classList.contains("open")) return;
+  heroCard.classList.remove("open");
+  heroCard.removeAttribute("role"); heroCard.removeAttribute("aria-modal");
+  heroCardHome.appendChild(heroCard);
+  $("cardScrim").hidden = true;
+  if(!silent){ lock(false); lastFocus && lastFocus.focus && lastFocus.focus(); }
+}
+$("reviewsBtn").addEventListener("click", openCard);
+$("cardScrim").addEventListener("click", () => closeCard());
+heroCard.querySelector("[data-card-close]").addEventListener("click", () => closeCard());
+matchMedia("(max-width:980px) and (min-aspect-ratio:3/4), (max-aspect-ratio:3/4)").addEventListener("change", e => { if(!e.matches) closeCard(); });
 
 renderMenu();
 renderCart(false);
