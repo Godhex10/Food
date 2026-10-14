@@ -719,9 +719,108 @@
     *{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
     html{scroll-behavior:auto}
   }
+
+  /* =====================================================
+     PRELOADER
+     ===================================================== */
+  html.is-loading,html.is-loading body{overflow:hidden}
+  .preloader{
+    position:fixed;inset:0;z-index:200;display:grid;place-items:center;overflow:hidden;
+    background:radial-gradient(ellipse at 30% 30%,#f1f0ee 0%,transparent 60%),linear-gradient(180deg,#e8e6e3 0%,#dcd9d5 100%);
+    transition:transform .9s cubic-bezier(.76,0,.24,1),border-radius .9s cubic-bezier(.76,0,.24,1);
+    will-change:transform;
+  }
+  .preloader::before{content:"";position:absolute;width:120vw;height:30vh;left:-10vw;top:38vh;border-radius:50%;background:var(--peach);filter:blur(12px);transform:rotate(-24deg)}
+  .pl-center{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;transition:opacity .35s ease,transform .5s cubic-bezier(.5,0,.75,0)}
+  .pl-stage{position:relative;width:clamp(150px,22vmin,200px);aspect-ratio:1;margin-bottom:26px}
+  .pl-ring{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);transform:rotate(-90deg)}
+  .pl-ring circle{fill:none;stroke-width:2.5}
+  .pl-track{stroke:rgba(0,0,0,.08)}
+  .pl-bar{stroke:var(--ink);stroke-linecap:round;stroke-dasharray:352;stroke-dashoffset:352;transition:stroke-dashoffset .25s linear}
+  .pl-plate{
+    position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(circle at 36% 30%,#fff 0%,#f5f4f1 50%,#dedbd6 100%);
+    box-shadow:0 26px 36px -16px rgba(40,30,20,.45),0 8px 14px rgba(0,0,0,.08),inset 0 -6px 12px rgba(0,0,0,.06);
+    animation:plSpin 2.6s linear infinite;
+  }
+  .pl-food{position:absolute;inset:8%;border-radius:50%;background:#cfc9c0 url("images/jollof.jpg") center/cover;box-shadow:inset 0 8px 18px rgba(0,0,0,.28)}
+  @keyframes plSpin{to{transform:rotate(360deg)}}
+  .pl-steam{position:absolute;left:50%;bottom:calc(100% + 10px);width:60px;height:60px;transform:translateX(-50%);pointer-events:none}
+  .pl-steam path{fill:none;stroke:rgba(53,53,55,.28);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:60;stroke-dashoffset:60;animation:plSteam 2.4s ease-in-out infinite}
+  .pl-steam path:nth-child(2){animation-delay:.5s}
+  .pl-steam path:nth-child(3){animation-delay:1s}
+  @keyframes plSteam{0%{stroke-dashoffset:60;opacity:0;transform:translateY(8px)}35%{opacity:1}100%{stroke-dashoffset:-60;opacity:0;transform:translateY(-10px)}}
+  .pl-brand{font-weight:900;font-size:clamp(15px,2vw,18px);letter-spacing:.24em;color:var(--ink-soft)}
+  .pl-brand b{color:var(--ink)}
+  .pl-msg{margin-top:8px;font-size:13.5px;font-weight:700;color:var(--ink-soft);min-height:1.4em;transition:opacity .25s}
+  .pl-pct{margin-top:14px;font-size:12px;font-weight:900;letter-spacing:.12em;color:var(--ink);font-variant-numeric:tabular-nums}
+  .preloader.done{transform:translateY(-100%);border-radius:0 0 50% 50% / 0 0 14vh 14vh}
+  .preloader.done .pl-center{opacity:0;transform:translateY(-40px) scale(.92)}
+  @media (prefers-reduced-motion:reduce){
+    .pl-plate,.pl-steam path{animation:none}
+    .preloader{transition:opacity .3s}
+    .preloader.done{transform:none;opacity:0}
+  }
 </style>
 </head>
 <body>
+<!-- ============ Preloader ============ -->
+<div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="Loading Commint Buka">
+  <div class="pl-center">
+    <div class="pl-stage">
+      <svg class="pl-steam" viewBox="0 0 70 70" aria-hidden="true"><path d="M22 62c-6-9 6-14 0-24s6-15 0-24"/><path d="M35 62c-6-9 6-14 0-24s6-15 0-24"/><path d="M48 62c-6-9 6-14 0-24s6-15 0-24"/></svg>
+      <svg class="pl-ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="pl-track" cx="60" cy="60" r="56"/><circle class="pl-bar" id="plBar" cx="60" cy="60" r="56"/></svg>
+      <div class="pl-plate"><div class="pl-food"></div></div>
+    </div>
+    <div class="pl-brand"><b>COMMINT</b> BUKA</div>
+    <p class="pl-msg" id="plMsg">Warming up the pots…</p>
+    <span class="pl-pct" id="plPct">0%</span>
+  </div>
+</div>
+<script>
+/* Preloader: progress follows the real loading of the hero photos + fonts. */
+(function(){
+  var root = document.documentElement; root.classList.add("is-loading");
+  var el = document.getElementById("preloader"), bar = document.getElementById("plBar"),
+      pct = document.getElementById("plPct"), msg = document.getElementById("plMsg");
+  var IMGS = ["images/jollof.jpg","images/friedrice.jpg","images/amala.jpg","images/egusi.jpg","images/poundedyam.jpg","images/puffpuff.jpg"];
+  var total = IMGS.length + 2, done = 0, shown = 0, finished = false, t0 = Date.now();
+  var again = false; try { again = sessionStorage.getItem("cb.loaded") === "1"; } catch(e) {}
+  var MIN = again ? 450 : 1500;                      // short on repeat visits, never a flash
+  var MSGS = [[0,"Warming up the pots…"],[35,"Plating the jollof…"],[70,"Pouring the zobo…"],[100,"Food is ready!"]];
+  function tick(){ done++; }
+  IMGS.forEach(function(src){ var i = new Image(); i.onload = i.onerror = tick; i.src = src; });
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(tick, tick);
+  if(document.readyState === "complete") tick(); else addEventListener("load", tick, { once:true });
+
+  function frame(){
+    var elapsed = Date.now() - t0;
+    var target = Math.min(done / total, elapsed / MIN) * 100;   // never faster than MIN
+    shown += (target - shown) * 0.12 + (target > shown ? 0.4 : 0);
+    if(shown > target) shown = target;
+    var p = Math.round(shown);
+    bar.style.strokeDashoffset = 352 - 352 * p / 100;
+    pct.textContent = p + "%";
+    for(var i = MSGS.length - 1; i >= 0; i--) if(p >= MSGS[i][0]){ if(msg.textContent !== MSGS[i][1]) msg.textContent = MSGS[i][1]; break; }
+    if(p >= 100) return finish();
+    if(elapsed > 7000) return finish();                        // slow network: don't trap the visitor
+    requestAnimationFrame(frame);
+  }
+  function finish(){
+    if(finished) return; finished = true;
+    bar.style.strokeDashoffset = 0; pct.textContent = "100%";
+    try { sessionStorage.setItem("cb.loaded", "1"); } catch(e) {}
+    setTimeout(function(){
+      el.classList.add("done");
+      root.classList.remove("is-loading");
+      window.__preloaded = true;
+      dispatchEvent(new Event("preloader:done"));          // hero starts its clockwise swing now
+      setTimeout(function(){ el.remove(); }, 950);
+    }, 280);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
 <!-- ============ Site header (always visible) ============ -->
 <header class="navbar" id="navbar">
   <div class="wrap navbar-in">
@@ -1562,7 +1661,6 @@ Store.onChange(key => {
 });
 
 applyBranchInfo();
-if(!Store.chosenBranch()) openPicker(true);
 
 renderMenu();
 renderCart(false);
@@ -1575,10 +1673,14 @@ document.title = STORE.name + " · Today's Menu";
 /* ---------- Init: first plate swings in clockwise ---------- */
 renderInfo();
 buildTrack();
-plateWrap.innerHTML = plateHTML(dishes[current], true);
-plateIn(plateWrap.firstElementChild, 1);
-textIn(1);
-restartAuto();
+function startHero(){
+  plateWrap.innerHTML = plateHTML(dishes[current], true);
+  plateIn(plateWrap.firstElementChild, 1);
+  textIn(1);
+  restartAuto();
+  if(!Store.chosenBranch()) setTimeout(() => openPicker(true), reduce ? 0 : 700);
+}
+if(window.__preloaded) startHero(); else addEventListener("preloader:done", startHero, { once:true });
 </script>
 </body>
 </html>
