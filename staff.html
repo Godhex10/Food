@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Branch dashboard · Commint Buka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/console.css">
+</head>
+<body class="console">
+
+<!-- ============ Login ============ -->
+<main class="login" id="loginView" hidden>
+  <form class="login-card" id="loginForm" novalidate>
+    <a class="brand" href="index.html" data-brand></a>
+    <h1>Branch staff login</h1>
+    <p>Sign in to see and manage your branch's orders.</p>
+    <div class="login-err" id="loginErr"></div>
+    <label class="field"><span>Username</span><input class="input" id="lUser" autocomplete="username" autocapitalize="none"></label>
+    <label class="field"><span>PIN</span><input class="input" id="lPin" type="password" inputmode="numeric" autocomplete="current-password"></label>
+    <button class="btn block">Sign in</button>
+    <div class="demo-acc">
+      <p>Demo accounts · tap to fill</p>
+      <button type="button" data-fill="allen|1111"><b>Bola · Allen staff</b><code>allen / 1111</code></button>
+      <button type="button" data-fill="ikeja|2222"><b>Kemi · Ikeja staff</b><code>ikeja / 2222</code></button>
+      <button type="button" data-fill="tunde|3333"><b>Tunde · both branches</b><code>tunde / 3333</code></button>
+    </div>
+    <div class="login-links"><a href="index.html">← Customer site</a><a href="admin.html">Management login</a></div>
+  </form>
+</main>
+
+<!-- ============ Dashboard ============ -->
+<div id="appView" hidden>
+  <header class="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="index.html" data-brand></a>
+      <div class="where"><small>Branch</small><span id="branchName"></span></div>
+      <div class="seg branch-seg" id="branchSeg" hidden></div>
+      <div class="right">
+        <button class="pill-btn" id="printerPill"><span class="led"></span><span class="hide-sm">Printer</span></button>
+        <button class="pill-btn" id="soundBtn" aria-pressed="true"></button>
+        <div class="who"><span class="av" id="av"></span><div><span id="whoName"></span><small>Branch staff</small></div></div>
+        <button class="icon-btn" id="logout" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="staff-main" id="main">
+    <section>
+      <div class="alerts" id="alerts"></div>
+      <div class="board-head">
+        <h1 id="boardTitle">Orders</h1>
+        <label class="search-sm"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg><input id="q" type="search" placeholder="Order no., name or phone"></label>
+      </div>
+      <div class="chips" id="filters"></div>
+      <div class="board" id="board"></div>
+    </section>
+    <aside class="side">
+      <div id="printer"></div>
+      <section class="panel">
+        <div class="panel-title"><h3>Today at this branch</h3></div>
+        <div class="kv" id="today" style="grid-template-columns:1fr auto"></div>
+      </section>
+    </aside>
+  </div>
+  <div class="denied panel" id="denied" hidden>
+    <h2 style="font-size:22px;margin-bottom:8px">No access to this branch</h2>
+    <p class="muted" style="margin-bottom:18px">Your account can only see orders for your own branch. Ask management if you need access.</p>
+    <a class="btn" href="staff.html">Back to my branch</a>
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/ui.js"></script>
+<script src="assets/console.js"></script>
+<script>
+const { $, esc } = UI;
+document.querySelectorAll("[data-brand]").forEach(e => e.innerHTML = UI.brandHTML());
+
+let user = Store.session("staff"), BR = null, filter = "active", query = "", seen = new Set(), printer = null, ready = false;
+let sound = true; try { sound = localStorage.getItem("cb.sound") !== "off"; } catch(e) {}
+const ACTIVE = ["new","confirmed","preparing","ready","out"];
+const startOfDay = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); };
+
+/* ---------- login ---------- */
+$("loginForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const r = Store.login($("lUser").value, $("lPin").value, "staff");
+  if(r.error){ $("loginErr").textContent = r.error; $("loginErr").classList.add("show"); return; }
+  user = r.user; UI.chime(); start();
+});
+document.querySelectorAll("[data-fill]").forEach(b => b.addEventListener("click", () => { const [u, p] = b.dataset.fill.split("|"); $("lUser").value = u; $("lPin").value = p; }));
+$("logout").addEventListener("click", () => { Store.logout("staff"); location.href = "staff.html"; });
+
+/* ---------- start ---------- */
+function start(){
+  $("loginView").hidden = true; $("appView").hidden = false;
+  Console.init({ user:() => user });
+  const asked = new URLSearchParams(location.search).get("branch");
+  if(asked && !Store.canSee(user, asked)){
+    $("main").hidden = true; $("denied").hidden = false;
+    Store.log(user, "login", `${user.name} was blocked from opening the ${Store.branch(asked) ? Store.branch(asked).name : asked} branch`, asked);
+    return;
+  }
+  let saved = null; try { saved = sessionStorage.getItem("cb.staffBranch"); } catch(e) {}
+  BR = asked || (saved && user.branches.includes(saved) ? saved : user.branches[0]);
+  $("whoName").textContent = user.name; $("av").textContent = user.name.split(" ").map(x => x[0]).join("").slice(0, 2);
+  if(user.branches.length > 1){
+    $("branchSeg").hidden = false;
+    $("branchSeg").innerHTML = user.branches.map(b => `<button data-b="${b}">${Store.branch(b).name}</button>`).join("");
+    $("branchSeg").addEventListener("click", e => { const x = e.target.closest("button"); if(x) switchBranch(x.dataset.b); });
+  }
+  switchBranch(BR);
+  Store.onChange(k => { if(k.startsWith("order.") || k === "printers" || k === "seed" || k === "settings") schedule(); });
+  Console.startPrinterLoop(printed => { if(printed.some(p => p.order.branch === BR)) printer.refresh(); });
+  setInterval(render, 15000);
+  ready = true;
+}
+function switchBranch(b){
+  BR = b; try { sessionStorage.setItem("cb.staffBranch", b); } catch(e) {}
+  seen = new Set(Store.orders(o => o.branch === BR).map(o => o.id));
+  $("branchName").textContent = Store.branch(BR).name;
+  document.title = Store.branch(BR).name + " branch · Commint Buka";
+  $("branchSeg").querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.b === BR));
+  printer = Console.printerPanel($("printer"), BR, user);
+  render();
+}
+
+/* ---------- board ---------- */
+let t;
+function schedule(){ clearTimeout(t); t = setTimeout(() => { render(); printer && printer.refresh(); }, 120); }
+
+const FILTERS = [
+  ["active","Active", o => ACTIVE.includes(o.status)],
+  ["new","New", o => o.status === "new"],
+  ["confirmed","Confirmed", o => o.status === "confirmed"],
+  ["preparing","Preparing", o => o.status === "preparing"],
+  ["ready","Ready / Out", o => o.status === "ready" || o.status === "out"],
+  ["late","Late", o => Store.delayInfo(o).late],
+  ["completed","Completed today", o => o.status === "completed" && o.statusAt >= startOfDay()],
+  ["cancelled","Cancelled today", o => o.status === "cancelled" && o.statusAt >= startOfDay()],
+  ["all","All", () => true]
+];
+
+function render(){
+  if(!BR) return;
+  const mine = Store.orders(o => o.branch === BR);            // routing: only this branch's orders
+  /* new order alert */
+  const fresh = new Set();
+  mine.forEach(o => { if(!seen.has(o.id)){ seen.add(o.id); if(ready){ fresh.add(o.id); } } });
+  if(fresh.size){ if(sound) UI.chime(); UI.toast(fresh.size === 1 ? `New order ${[...fresh][0]}` : `${fresh.size} new orders`); if(filter !== "active" && filter !== "new") setFilter("active"); }
+
+  const f = FILTERS.find(x => x[0] === filter);
+  $("filters").innerHTML = FILTERS.map(([k, label, fn]) => { const n = mine.filter(fn).length; return k === "late" && !n ? "" : `<button class="chip${k === filter ? " on" : ""}" data-filter="${k}">${label}<span class="n">${n}</span></button>`; }).join("");
+  const q = query.toLowerCase().replace(/\s/g, "");
+  let list = mine.filter(f[2]).filter(o => !q || (o.id + o.customer.name + o.customer.phone).toLowerCase().replace(/\s/g, "").includes(q));
+  if(filter === "all") list = list.slice(0, 60);
+  /* active: oldest first so nothing gets forgotten; history: newest first */
+  if(ACTIVE.includes(filter) || filter === "active" || filter === "late") list.sort((a, b) => a.createdAt - b.createdAt);
+  $("board").innerHTML = list.length ? list.map(o => Console.orderCard(o, fresh.has(o.id))).join("")
+    : `<div class="empty-board"><div class="ep"></div>${filter === "active" ? "No active orders. New orders appear here instantly." : "Nothing here."}</div>`;
+  $("boardTitle").textContent = f[1] + " orders";
+
+  /* alerts */
+  const late = mine.filter(o => Store.delayInfo(o).late), failed = mine.filter(o => Store.printState(o) === "failed");
+  const online = (Store.printers()[BR] || {}).online !== false;
+  $("alerts").innerHTML =
+    (late.length ? `<div class="alert red">${Console.ICON.warn}<span>${late.length} order${late.length > 1 ? "s are" : " is"} running late: ${late.map(o => o.id).join(", ")}</span><button class="btn sm danger" data-filter="late">Show</button></div>` : "") +
+    (failed.length ? `<div class="alert red">${Console.ICON.print}<span>${failed.length} ticket${failed.length > 1 ? "s" : ""} failed to print. The orders are safe; retry or reprint them.</span><button class="btn sm danger" data-open="${failed[0].id}">Open</button></div>` : "") +
+    (!online ? `<div class="alert amber">${Console.ICON.print}<span>The ${Store.branch(BR).name} printer is offline. New tickets are being held and will print when it reconnects.</span></div>` : "");
+  $("printerPill").classList.toggle("off", !online);
+  $("printerPill").querySelector(".hide-sm").textContent = online ? "Printer online" : "Printer offline";
+  $("soundBtn").innerHTML = sound ? `<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span class="hide-sm">Sound on</span>` : `<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg><span class="hide-sm">Sound off</span>`;
+
+  /* today */
+  const today = mine.filter(o => o.createdAt >= startOfDay());
+  const paid = today.filter(o => o.payment.status === "paid" && o.status !== "cancelled");
+  $("today").innerHTML = `<dt>Orders placed</dt><dd class="num">${today.length}</dd>
+    <dt>Paid sales</dt><dd class="num">${naira(paid.reduce((s, o) => s + o.total, 0))}</dd>
+    <dt>Completed</dt><dd class="num">${today.filter(o => o.status === "completed").length}</dd>
+    <dt>Awaiting payment</dt><dd class="num">${today.filter(o => o.status === "new").length}</dd>
+    <dt>Cancelled</dt><dd class="num">${today.filter(o => o.status === "cancelled").length}</dd>`;
+}
+function setFilter(k){ filter = k; render(); }
+
+document.addEventListener("click", e => {
+  const adv = e.target.closest("[data-advance]"); if(adv){ e.stopPropagation(); Console.advance(adv.dataset.advance); return; }
+  const fl = e.target.closest("[data-filter]"); if(fl){ setFilter(fl.dataset.filter); return; }
+  const op = e.target.closest("[data-open]"); if(op){ Console.open(op.dataset.open); return; }
+  const card = e.target.closest("[data-order]"); if(card) Console.open(card.dataset.order);
+});
+document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target.matches("[data-order]")) Console.open(e.target.dataset.order); });
+$("q").addEventListener("input", e => { query = e.target.value; render(); });
+$("soundBtn").addEventListener("click", () => { sound = !sound; try { localStorage.setItem("cb.sound", sound ? "on" : "off"); } catch(e) {} if(sound) UI.chime(); render(); });
+$("printerPill").addEventListener("click", () => $("printer").scrollIntoView({ behavior:"smooth", block:"center" }));
+
+if(user) start(); else { $("loginView").hidden = false; $("lUser").focus(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Track your order · Commint Buka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  .page{padding:clamp(24px,4vw,44px) 0 80px}
+  .hero{position:relative;overflow:hidden;display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:clamp(22px,4vw,34px);border-radius:28px;background:var(--ink);color:#fff;margin-bottom:22px}
+  .hero::before{content:"";position:absolute;width:520px;height:150px;right:-120px;top:30%;border-radius:50%;background:rgba(246,185,211,.18);filter:blur(10px);transform:rotate(-24deg)}
+  .hero .tick{width:58px;height:58px;border-radius:50%;background:var(--rose-2);display:grid;place-items:center;flex:none;position:relative;animation:pop .5s cubic-bezier(.3,1.5,.5,1)}
+  .hero .tick svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+  .hero h1{font-size:clamp(20px,3vw,28px);font-weight:900;line-height:1.15;position:relative}
+  .hero p{opacity:.75;font-size:14px;margin-top:4px;position:relative}
+  .hero .oid{position:relative;margin-left:auto;text-align:right}
+  .hero .oid small{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+  .hero .oid b{font-family:ui-monospace,Consolas,monospace;font-size:clamp(18px,2.6vw,24px);letter-spacing:.04em}
+  .hero .oid .copy{margin-top:6px}
+  .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+  .col{display:grid;gap:20px}
+  .status-now{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .status-now h2{font-size:22px}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .meta div{padding:12px 14px;border-radius:14px;background:#fff;font-size:13px}
+  .meta small{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+  .meta b{font-size:14px;line-height:1.4}
+  .paid{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--green-soft);color:#1d6b3e;font-weight:800;font-size:14px}
+  .paid svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .cancelled{padding:14px;border-radius:16px;background:var(--red-soft);color:var(--red);font-weight:800;font-size:14px;line-height:1.5}
+  .phone{border-radius:26px;background:#1e1e20;padding:14px;box-shadow:0 20px 40px rgba(0,0,0,.15)}
+  .phone-top{display:flex;align-items:center;gap:10px;color:#fff;padding:4px 6px 12px}
+  .phone-top .av{width:34px;height:34px;border-radius:50%;background:var(--rose-2);display:grid;place-items:center;font-weight:900;font-size:12px}
+  .phone-top b{font-size:13.5px;display:block}
+  .phone-top small{font-size:11px;opacity:.6}
+  .phone .sms{max-height:360px;overflow-y:auto;padding:4px}
+  .phone .sms-msg{background:#2c2c2f;color:#f1f1f1;box-shadow:none}
+  .phone .sms-msg.newest{background:#3a3a3e}
+  .phone .sms-msg small{color:#9a9a9e}
+  .lookup{max-width:520px;margin:0 auto}
+  .recent{display:grid;gap:8px;margin-top:18px}
+  .recent a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;background:#fff;font-size:13.5px;font-weight:700;transition:transform .15s}
+  .recent a:hover{transform:translateX(3px)}
+  @keyframes pop{from{transform:scale(.4);opacity:0}}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr} .hero .oid{margin-left:0;text-align:left} }
+</style>
+</head>
+<body>
+<header class="navbar">
+  <div class="wrap navbar-in">
+    <a href="index.html" class="brand" id="brand"></a>
+    <div class="nav-right"><a class="btn sm" href="index.html#menu">Order again</a></div>
+  </div>
+</header>
+
+<main class="page">
+  <div class="wrap">
+    <!-- lookup (no id in the URL) -->
+    <section id="lookup" class="lookup" hidden>
+      <h1 class="sec-title" style="font-size:clamp(30px,4.6vw,48px);margin-bottom:18px"><span class="l1">TRACK</span> <span class="l2">ORDER</span></h1>
+      <form class="panel" id="lookupForm" novalidate>
+        <label class="field" data-f="lid"><span>Order number</span><input class="input mono" id="lid" placeholder="e.g. CB-AL-261014-004" autocomplete="off"><div class="errmsg"></div></label>
+        <label class="field" data-f="lphone"><span>Phone number used for the order</span><input class="input" id="lphone" type="tel" placeholder="0803 123 4567"><div class="errmsg"></div></label>
+        <button class="btn block">Find my order</button>
+      </form>
+      <div id="recentWrap" hidden>
+        <p class="eyebrow" style="margin-top:28px">Orders from this device</p>
+        <div class="recent" id="recent"></div>
+      </div>
+    </section>
+
+    <!-- order view -->
+    <section id="view" hidden>
+      <div class="hero" id="hero"></div>
+      <div class="grid">
+        <div class="col">
+          <section class="panel">
+            <div class="status-now"><div><p class="eyebrow">Live status</p><h2 id="statusNow"></h2></div><span id="statusTag"></span></div>
+            <ol class="timeline" id="timeline"></ol>
+            <div class="meta" id="meta"></div>
+          </section>
+          <section class="panel" id="payPanel"></section>
+        </div>
+        <div class="col">
+          <section class="panel">
+            <div class="panel-title"><h3>Your order</h3><span id="typeTag"></span></div>
+            <div id="items"></div>
+            <div style="margin-top:14px" id="totals"></div>
+          </section>
+          <section class="phone" aria-label="Text messages">
+            <div class="phone-top"><span class="av">CB</span><div><b>Text messages</b><small id="smsTo"></small></div></div>
+            <div class="sms" id="sms"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="assets/data.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/ui.js"></script>
+<script>
+const { $, esc } = UI;
+$("brand").innerHTML = UI.brandHTML();
+const params = new URLSearchParams(location.search);
+let id = params.get("id"), isNew = params.get("new") === "1", lastStatus = null;
+const CHECK = `<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+
+function showLookup(){
+  $("lookup").hidden = false; $("view").hidden = true;
+  let mine = []; try { mine = JSON.parse(localStorage.getItem("cb.mine") || "[]"); } catch(e) {}
+  const found = mine.map(Store.order).filter(Boolean);
+  $("recentWrap").hidden = !found.length;
+  $("recent").innerHTML = found.map(o => `<a href="order.html?id=${encodeURIComponent(o.id)}"><span class="mono">${o.id}</span><span>${UI.statusTag(o.status)}</span></a>`).join("");
+}
+$("lookupForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const oid = $("lid").value.trim().toUpperCase(), ph = $("lphone").value.replace(/[\s-]/g, "");
+  const o = Store.order(oid);
+  document.querySelectorAll(".field").forEach(f => f.classList.remove("err"));
+  if(!o){ const f = document.querySelector('[data-f="lid"]'); f.classList.add("err"); f.querySelector(".errmsg").textContent = "We couldn't find that order number."; return; }
+  if(o.customer.phone.slice(-8) !== ph.slice(-8)){ const f = document.querySelector('[data-f="lphone"]'); f.classList.add("err"); f.querySelector(".errmsg").textContent = "That phone number doesn't match this order."; return; }
+  location.href = "order.html?id=" + encodeURIComponent(o.id);
+});
+
+function render(){
+  const o = Store.order(id);
+  if(!o){ showLookup(); return; }
+  const b = Store.branch(o.branch), S = Store.STATUS;
+  $("lookup").hidden = true; $("view").hidden = false;
+  document.title = o.id + " · " + S[o.status].label;
+
+  const headline = o.status === "cancelled" ? "This order was cancelled"
+    : o.status === "completed" ? "Order completed. Enjoy your meal!"
+    : isNew && o.status === "new" ? "Thank you! Your order has been placed."
+    : S[o.status].label;
+  const sub = o.status === "new" ? `Sent to our ${b.name} branch. Complete your transfer below so we can start.` : `${b.name} branch · placed ${UI.dateTime(o.createdAt)}`;
+  $("hero").innerHTML = `<span class="tick" style="${o.status === "cancelled" ? "background:var(--red)" : ""}">${o.status === "cancelled" ? `<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg>` : CHECK}</span>
+    <div><h1>${headline}</h1><p>${esc(sub)}</p></div>
+    <div class="oid"><small>Order number</small><b>${o.id}</b><br><button class="copy" data-copy="${o.id}">Copy</button></div>`;
+
+  $("statusNow").textContent = S[o.status].label;
+  $("statusTag").innerHTML = UI.typeTag(o);
+
+  /* timeline */
+  const steps = o.status === "cancelled" ? o.history.map(h => h.to) : Store.flow(o);
+  const at = s => { const h = o.history.find(x => x.to === s); return h ? h.at : null; };
+  const idx = steps.indexOf(o.status);
+  const DESC = { new:"Received by the branch", confirmed:"Payment received, order accepted", preparing:"Your food is being packed", ready:"Come pick it up at " + b.address, out:"The rider is on the way", completed:"Delivered and done", cancelled:o.cancelReason || "" };
+  $("timeline").innerHTML = steps.map((s, i) => {
+    const cls = s === "cancelled" ? "cancel" : i < idx || o.status === "completed" ? "done" : i === idx ? "now" : "";
+    const t = at(s);
+    return `<li class="${cls}"><span class="dot">${cls === "done" ? CHECK : ""}</span><div><b>${S[s].label}</b><small>${t ? UI.time(t) + " · " : ""}${esc(DESC[s])}</small></div></li>`;
+  }).join("");
+
+  $("meta").innerHTML = `
+    <div><small>Branch</small><b>${b.name}</b><br><span class="muted small">${esc(b.phone)}</span></div>
+    <div><small>${o.type === "delivery" ? "Delivering to" : "Pickup at"}</small><b>${o.type === "delivery" ? esc(o.address.street) + ", " + esc(o.address.area) : esc(b.address)}</b></div>`;
+
+  /* payment */
+  if(o.status === "cancelled") $("payPanel").innerHTML = `<div class="panel-title"><h3>Payment</h3></div><div class="cancelled">Cancelled${o.cancelReason ? ": " + esc(o.cancelReason) : ""}.<br>If you already paid, call ${esc(b.phone)} for a refund.</div>`;
+  else if(o.payment.status === "paid") $("payPanel").innerHTML = `<div class="panel-title"><h3>Payment</h3></div><div class="paid">${CHECK}<span>Payment of ${naira(o.total)} confirmed by ${b.name} branch at ${UI.time(o.payment.confirmedAt)}</span></div>`;
+  else $("payPanel").innerHTML = `<div class="panel-title"><h3>Complete your payment</h3><span class="tag amber">Awaiting transfer</span></div>
+      ${UI.bankHTML(o.total, o.id)}
+      <p class="muted small" style="margin-top:12px;line-height:1.5">Transfer exactly <b>${naira(o.total)}</b> and use <b class="mono">${o.id}</b> as the narration. The ${b.name} branch will confirm it and you'll get a text.</p>`;
+
+  $("typeTag").innerHTML = UI.typeTag(o);
+  $("items").innerHTML = UI.itemsHTML(o);
+  $("totals").innerHTML = UI.totalsHTML(o);
+  $("smsTo").textContent = "Sent to " + o.customer.phone;
+  $("sms").innerHTML = o.sms.slice().reverse().map((m, i) => `<div class="sms-msg${i === 0 ? " newest" : ""}">${esc(m.text)}<small>${UI.time(m.at)}</small></div>`).join("");
+
+  if(lastStatus && lastStatus !== o.status) UI.toast("Update: " + S[o.status].label);
+  lastStatus = o.status;
+}
+
+if(id) render(); else showLookup();
+Store.onChange(k => { if(id && (k === "order." + id || k === "seed")) render(); });
+setInterval(() => { if(id && !$("view").hidden) render(); }, 30000);
+</script>
+</body>
+</html>

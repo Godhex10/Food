@@ -664,6 +664,57 @@
     .foot-grid{grid-template-columns:1fr}
     .toast{bottom:16px}
   }
+  /* branch chip, picker and branch cards */
+  .branch-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 9px;border-radius:16px;background:rgba(255,255,255,.75);font-size:12.5px;font-weight:800;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s;white-space:nowrap}
+  .branch-chip:hover{background:#fff}
+  .branch-chip svg{width:15px;height:15px;fill:none;stroke:var(--rose);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .branch-chip .chev{width:13px;height:13px;stroke:var(--ink-soft)}
+  .cart-branch{font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-top:2px}
+  .cart-branch b{color:var(--rose)}
+  .bp{position:fixed;inset:0;z-index:75;display:grid;place-items:center;padding:16px;background:rgba(20,18,16,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:fade .3s}
+  .bp-card{position:relative;width:min(760px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:#faf9f7;border-radius:30px;padding:clamp(22px,4vw,36px);box-shadow:0 40px 80px rgba(0,0,0,.3);animation:pop .4s cubic-bezier(.3,1.3,.5,1)}
+  .bp-card h2{font-size:clamp(22px,3.4vw,30px);font-weight:900;line-height:1.15;margin:6px 0 6px;padding-right:40px}
+  .bp-card > .muted{font-size:14px;margin-bottom:22px}
+  .bp-close{position:absolute;top:18px;right:18px}
+  .bp.locked .bp-close{display:none}
+  .bp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .bp-opt{display:flex;flex-direction:column;gap:10px;text-align:left;padding:20px;border-radius:22px;background:#fff;box-shadow:0 10px 26px rgba(40,30,20,.07),inset 0 0 0 2px transparent;transition:box-shadow .2s,transform .2s}
+  .bp-opt:hover{transform:translateY(-3px);box-shadow:0 18px 34px rgba(40,30,20,.12),inset 0 0 0 2px var(--ink)}
+  .bp-opt.cur{box-shadow:0 10px 26px rgba(40,30,20,.07),inset 0 0 0 2px var(--rose)}
+  .bp-top{display:flex;align-items:center;gap:12px}
+  .bp-badge{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-weight:900;font-size:15px;background:linear-gradient(135deg,#f9c9dc,#f2a8c6);color:#3a2230;flex:none}
+  .bp-opt h3{font-size:19px;font-weight:900}
+  .bp-opt .addr{font-size:13px;color:var(--ink-soft);line-height:1.45}
+  .bp-opt .areas{font-size:12.5px;line-height:1.5;color:#4c4c4f}
+  .bp-opt .areas b{color:var(--ink)}
+  .bp-go{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px dashed var(--line);font-size:14px;font-weight:900}
+  .bp-go svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .open-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:#2e9e5b}
+  .open-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px rgba(46,158,91,.18)}
+  .open-tag.closed{color:#c62828}
+  .open-tag.closed::before{box-shadow:0 0 0 3px rgba(198,40,40,.15)}
+  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.97)}}
+  @keyframes fade{from{opacity:0}}
+  .branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .branch-card{display:flex;flex-direction:column;gap:16px}
+  .branch-card.cur{box-shadow:0 18px 40px rgba(40,30,20,.06),inset 0 0 0 2px var(--rose)}
+  .branch-card .bc-head{display:flex;align-items:flex-start;gap:14px}
+  .branch-card .bc-head h3{font-size:20px;margin:0}
+  .branch-card .bc-head p{font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.45}
+  .branch-card .bc-cols{display:grid;grid-template-columns:1.2fr 1fr;gap:18px}
+  .branch-card h4{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+  .branch-card .zone{grid-template-columns:1fr auto;padding:9px 12px;font-size:13.5px}
+  .branch-card .hours{font-size:13px;gap:7px}
+  .branch-card .hours li{padding-bottom:7px}
+  .branch-card .bc-foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+  .branch-card .bc-foot .btn{height:42px}
+  @media (max-width:980px){ .branch-grid{grid-template-columns:1fr} }
+  @media (max-width:640px){
+    .bp-grid{grid-template-columns:1fr}
+    .branch-card .bc-cols{grid-template-columns:1fr}
+    .branch-chip{height:30px;padding:0 8px;font-size:12px}
+    .nav-brand{font-size:12px;letter-spacing:.12em}
+  }
   @media (prefers-reduced-motion:reduce){
     *{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
     html{scroll-behavior:auto}
@@ -675,8 +726,9 @@
 <header class="navbar" id="navbar">
   <div class="wrap navbar-in">
     <a href="#top" class="brand nav-brand" data-brand></a>
+    <button class="branch-chip" id="branchChip" aria-label="Change branch"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span data-branch-name></span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
     <nav class="nav-links">
-      <a href="#menu">Menu</a><a href="#combos">Combos</a><a href="#reviews">Reviews</a><a href="#about">About</a><a href="#delivery">Delivery</a>
+      <a href="#menu">Menu</a><a href="#combos">Combos</a><a href="#reviews">Reviews</a><a href="#delivery">Branches</a><a href="order.html">Track order</a>
     </nav>
     <div class="nav-actions">
       <button aria-label="Search the menu" data-search><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg></button>
@@ -858,26 +910,10 @@
     <div class="sec-head">
       <div>
         <p class="eyebrow">Hot to your door</p>
-        <h2 class="sec-title"><span class="l1">DELIVERY &amp;</span> <span class="l2">PICKUP</span></h2>
+        <h2 class="sec-title"><span class="l1">OUR</span> <span class="l2">BRANCHES</span></h2>
       </div>
     </div>
-    <div class="delivery">
-      <div class="panel zones">
-        <h3>Delivery zones</h3>
-        <div class="zone-list" id="zoneList"></div>
-        <p class="muted small">Fees are added at checkout based on your address.</p>
-      </div>
-      <div class="panel">
-        <h3>Opening hours</h3>
-        <ul class="hours" id="hours"></ul>
-      </div>
-      <div class="panel pickup">
-        <h3>Pickup</h3>
-        <p class="addr" data-address></p>
-        <p class="muted small">Free. Order ahead and skip the queue. We'll text you when it's ready.</p>
-        <a class="btn ghost" id="mapLink" target="_blank" rel="noopener">Get directions</a>
-      </div>
-    </div>
+    <div class="branch-grid" id="branchGrid"></div>
   </div>
 </section>
 
@@ -906,15 +942,15 @@
     </div>
     <div>
       <h4>Order</h4>
-      <a href="#menu">Full menu</a><a href="#combos">Combos</a><a href="#delivery">Delivery zones</a>
+      <a href="#menu">Full menu</a><a href="#combos">Combos</a><a href="#delivery">Branches &amp; delivery areas</a>
     </div>
     <div>
       <h4>Contact</h4>
       <a data-phone></a><a data-email></a><span data-address></span>
     </div>
     <div>
-      <h4>Hours</h4>
-      <span>Mon – Sat · 8am – 10pm</span><span>Sunday · 12pm – 9pm</span>
+      <h4>Demo pages</h4>
+      <a href="order.html">Track an order</a><a href="staff.html">Branch staff dashboard</a><a href="admin.html">Management dashboard</a>
     </div>
   </div>
   <div class="wrap foot-bottom">
@@ -928,7 +964,7 @@
 <div class="card-scrim" id="cardScrim" hidden></div>
 <aside class="drawer" id="cart" aria-label="Your cart" aria-hidden="true">
   <div class="drawer-head">
-    <h3>Your order</h3>
+    <div><h3>Your order</h3><p class="cart-branch" id="cartBranch"></p></div>
     <button class="icon-btn" data-close aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="seg" id="orderType">
@@ -972,118 +1008,25 @@
   </div>
 </div>
 
+<!-- ============ Branch picker ============ -->
+<div class="bp" id="branchPicker" role="dialog" aria-modal="true" aria-labelledby="bpTitle" hidden>
+  <div class="bp-card">
+    <button class="icon-btn bp-close" data-bp-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <p class="eyebrow">Welcome to <span data-name></span></p>
+    <h2 id="bpTitle">Which branch are you ordering from?</h2>
+    <p class="muted">Each branch has its own kitchen, menu availability and delivery areas.</p>
+    <div class="bp-grid" id="bpGrid"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="assets/data.js"></script>
+<script src="assets/store.js"></script>
 <script>
-/* =========================================================
-   DATA — every photo is a square crop in /images.
-   Photo sources (free licences, Pexels / Unsplash):
-     jollof 30246915 · friedrice bEUZfy7m-NU · amala 37648018 · egusi 0A03YQqU4CU
-     poundedyam kn_ANxnwCQ0 · puffpuff _y325luZNUs · suya 11112700 · dodo 27556971
-     zobo 32566391 · zobojar 34481088 · peppersoup 34618920 · box 37324427
-     jollofsuya woC24wGXsQ8 · ricestew 3gbiqiGJYUc · about 36707708
-   Store details, prices, zones and reviews below are PLACEHOLDERS —
-   replace them with Commint Buka's real information.
-   ========================================================= */
-const STORE = {
-  name:"Commint Buka", logo:"CB", hours:"Open till 10pm", location:" · Lekki, Lagos",
-  address:"12 Admiralty Way, Lekki Phase 1, Lagos", phone:"+234 800 000 0000", email:"hello@commintbuka.ng"
-};
-
-/* reusable option groups (type "one" = pick one, "many" = pick any) */
-const OPT = {
-  protein:{ name:"Choose your protein", type:"one", items:[["Chicken",0],["Beef",0],["Turkey",1500],["Fish",1000]] },
-  riceExtras:{ name:"Add extras", type:"many", items:[["Dodo",800],["Moi moi",700],["Coleslaw",500],["Extra chicken",2000]] },
-  spice:{ name:"Spice level", type:"one", items:[["Mild",0],["Normal",0],["Hot",0]] },
-  swallow:{ name:"Choose your swallow", type:"one", items:[["Pounded yam",0],["Eba",0],["Semo",0],["Amala",0]] },
-  meat:{ name:"Add more meat", type:"many", items:[["Extra beef",1000],["Ponmo",500],["Shaki",700],["Fish",1500]] },
-  pieces:{ name:"Portion", type:"one", items:[["10 pieces",0],["20 pieces",1300]] },
-  sticks:{ name:"Portion", type:"one", items:[["1 stick",0],["3 sticks",5500]] },
-  chill:{ name:"Serve", type:"one", items:[["Chilled",0],["With ice",0]] }
-};
-
-const CATS = ["All","Rice","Swallow & Soups","Grills","Sides & Small Chops","Drinks","Combos"];
-
-const MENU = [
-  { id:"jollof", name:"Jollof Rice & Chicken", short:"Jollof rice & chicken", cat:"Rice", price:4500, img:"images/jollof.jpg",
-    l1:"JOLLOF RICE &", l2:"CHICKEN", score:4.9, reviews:1248, time:"20 min", tag:"Best seller",
-    desc:"Smoky party jollof with grilled chicken and mixed veg.",
-    review:"Smoky, party-style jollof with that bottom-pot flavour, and grilled chicken charred just right. E choke!",
-    ingredients:["Long-grain parboiled rice","Tomato, tatashe & scotch bonnet","Grilled chicken thighs","Bay leaf & curry","Mixed veg & sweetcorn"],
-    opts:["protein","riceExtras","spice"] },
-  { id:"friedrice", name:"Fried Rice & Chicken", short:"Fried rice & chicken", cat:"Rice", price:4500, img:"images/friedrice.jpg",
-    l1:"FRIED RICE &", l2:"CHICKEN", score:4.6, reviews:932, time:"20 min",
-    desc:"Curry-yellow fried rice with sweetcorn, peas and chicken.",
-    review:"Fluffy curry-yellow grains, sweetcorn, peas and tender chicken. The fried rice that disappears first at every party.",
-    ingredients:["Parboiled rice","Chicken stock & curry","Diced chicken & liver","Carrots, peas & sweetcorn","Spring onion"],
-    opts:["protein","riceExtras"] },
-  { id:"jollofsuya", name:"Jollof & Chicken Skewers", cat:"Rice", price:5200, img:"images/jollofsuya.jpg", score:4.7, reviews:402, time:"25 min", tag:"New",
-    desc:"Party jollof topped with peppered chicken and bell pepper skewers.", opts:["riceExtras","spice"] },
-  { id:"ricestew", name:"White Rice & Seafood Stew", cat:"Rice", price:6500, img:"images/ricestew.jpg", score:4.6, reviews:288, time:"25 min",
-    desc:"Fluffy white rice, rich pepper stew with prawns, okra and garden egg.", opts:["riceExtras","spice"] },
-  { id:"amala", name:"Amala & Ewedu", short:"Amala & ewedu", cat:"Swallow & Soups", price:3800, img:"images/amala.jpg",
-    l1:"AMALA &", l2:"EWEDU", score:4.8, reviews:1105, time:"15 min", tag:"Local fave",
-    desc:"Soft amala with ewedu, gbegiri and peppery stew with assorted meat.",
-    review:"Silky ewedu, rich gbegiri and peppery stew over assorted meat, with soft, hot amala. Pure Ibadan comfort.",
-    ingredients:["Yam flour (elubo) amala","Ewedu (jute leaves)","Gbegiri bean soup","Obe ata stew","Assorted meat & shaki"],
-    opts:["meat","spice"] },
-  { id:"egusi", name:"Egusi Soup (Assorted)", short:"Egusi soup", cat:"Swallow & Soups", price:5200, img:"images/egusi.jpg",
-    l1:"ASSORTED MEAT", l2:"EGUSI", score:4.7, reviews:864, time:"25 min",
-    desc:"Fried egusi in palm oil with shaki, cow foot and kidney. Choose your swallow.",
-    review:"Fried egusi curds in palm oil, loaded with shaki, cow foot and kidney. Bring your pounded yam and clear your evening.",
-    ingredients:["Ground melon seeds","Palm oil","Shaki, cow foot & kidney","Stockfish & crayfish","Bitter leaf / ugwu"],
-    opts:["swallow","meat"] },
-  { id:"poundedyam", name:"Pounded Yam & Efo Riro", short:"Pounded yam & efo", cat:"Swallow & Soups", price:4800, img:"images/poundedyam.jpg",
-    l1:"POUNDED YAM &", l2:"EFO RIRO", score:4.5, reviews:618, time:"25 min",
-    desc:"Stretchy iyan with rich efo riro, iru and smoked fish.",
-    review:"Stretchy, lump-free iyan with a rich efo riro full of iru and locust-bean aroma. Heavy in the best way.",
-    ingredients:["Puna yam","Efo tete (spinach)","Iru (locust beans)","Tatashe & scotch bonnet","Smoked fish & ponmo"],
-    opts:["meat"] },
-  { id:"peppersoup", name:"Goat Meat Pepper Soup", cat:"Swallow & Soups", price:4000, img:"images/peppersoup.jpg", score:4.6, reviews:356, time:"20 min",
-    desc:"Hot, peppery goat meat broth with uziza and scent leaf.", opts:["spice"], available:false },
-  { id:"suya", name:"Beef Suya", cat:"Grills", price:3000, img:"images/suya.jpg", score:4.8, reviews:710, time:"15 min", tag:"Spicy",
-    desc:"Charcoal-grilled beef in yaji spice, with onions and tomatoes.", opts:["sticks","spice"] },
-  { id:"box", name:"Chicken, Dodo & Yam Box", cat:"Grills", price:5500, img:"images/box.jpg", score:4.7, reviews:390, time:"20 min",
-    desc:"Fried chicken, peppered beef, dodo and fried yam in one box.", opts:["spice"] },
-  { id:"dodo", name:"Fried Plantain (Dodo)", cat:"Sides & Small Chops", price:1500, img:"images/dodo.jpg", score:4.8, reviews:820, time:"10 min",
-    desc:"Sweet, ripe plantain fried golden.", opts:[] },
-  { id:"puffpuff", name:"Puff-Puff", short:"Puff-puff", cat:"Sides & Small Chops", price:1500, img:"images/puffpuff.jpg",
-    l1:"SWEET", l2:"PUFF-PUFF", score:4.4, reviews:540, time:"10 min",
-    desc:"Golden, airy and just sweet enough.",
-    review:"Golden outside, airy inside, just sweet enough. Nobody has ever eaten just one.",
-    ingredients:["Flour","Yeast","Sugar","Nutmeg","Warm water"], opts:["pieces"] },
-  { id:"zobo", name:"Chilled Zobo", cat:"Drinks", price:1000, img:"images/zobo.jpg", score:4.7, reviews:640, time:"2 min",
-    desc:"Hibiscus with ginger, pineapple and cloves. 50cl.", opts:["chill"] },
-  { id:"zobojar", name:"Zobo 1L Jar", cat:"Drinks", price:2500, img:"images/zobojar.jpg", score:4.8, reviews:215, time:"2 min",
-    desc:"A full litre of our house zobo to share, or not.", opts:[] },
-  /* combos */
-  { id:"c-lunch", name:"Lunch Deal", cat:"Combos", price:5000, was:5500, img:"images/friedrice.jpg", score:4.7, reviews:310, time:"20 min",
-    desc:"Fried rice & chicken, dodo and a chilled zobo.", opts:["protein"] },
-  { id:"c-box", name:"Chop Box for Two", cat:"Combos", price:9500, was:11000, img:"images/box.jpg", score:4.8, reviews:198, time:"25 min",
-    desc:"2 chicken, peppered beef, dodo, yam and 2 zobos.", opts:["spice"] },
-  { id:"c-party", name:"Jollof Party Pack", cat:"Combos", price:16000, was:19000, img:"images/jollof.jpg", score:4.9, reviews:156, time:"40 min",
-    desc:"Jollof for 4, 4 chicken, dodo, coleslaw and a 1L zobo.", opts:["spice"] }
-];
-
-/* the 6 dishes on today's menu in the hero */
-const TODAY = ["jollof","friedrice","amala","egusi","poundedyam","puffpuff"];
-const byId = id => MENU.find(m => m.id === id);
-const dishes = TODAY.map(byId);
-
-const ZONES = [["Lekki Phase 1","30–40 min",1000],["VI & Ikoyi","35–50 min",1500],["Ajah & Sangotedo","45–60 min",2000],["Yaba & Surulere","50–70 min",2500]];
-const HOURS = [["Sunday","12pm – 9pm"],["Monday","8am – 10pm"],["Tuesday","8am – 10pm"],["Wednesday","8am – 10pm"],["Thursday","8am – 10pm"],["Friday","8am – 11pm"],["Saturday","9am – 11pm"]];
-const REVIEWS = [
-  { name:"Tolu A.", when:"2 days ago", score:5, color:"#c2185b", dish:"Jollof Rice & Chicken",
-    text:"Ordered at 1pm, it was at my office by 1:35 and still hot. The jollof has that real party smoke. Finally a buka that does delivery properly." },
-  { name:"Chidi O.", when:"1 week ago", score:5, color:"#353537", dish:"Egusi Soup (Assorted)",
-    text:"The egusi is loaded. Shaki, cow foot, kidney, the works. Pounded yam was smooth with no lumps. My new Friday spot." },
-  { name:"Amaka E.", when:"2 weeks ago", score:4, color:"#6b4a2f", dish:"Chop Box for Two",
-    text:"Great value for two people. Chicken was crunchy and well spiced. Would love a bit more dodo, but I'm not complaining." },
-  { name:"Seun B.", when:"3 weeks ago", score:5, color:"#2e7d5b", dish:"Amala & Ewedu",
-    text:"Amala was soft and hot, gbegiri and ewedu on point. Tastes exactly like Ibadan. Ordering was fast and easy too." }
-];
-
-const naira = v => "₦" + v.toLocaleString("en-NG");
+/* ---------- Branch (chosen on first visit; prices & stock follow it) ---------- */
+let BR = Store.chosenBranch() || "allen";
+Store.applyBranch(BR);
 
 /* ---------- Elements ---------- */
 const $ = id => document.getElementById(id);
@@ -1272,10 +1215,21 @@ $("stars").innerHTML = `<div class="row base">${STAR.repeat(5)}</div><div class=
 const brandHTML = STORE.name.toUpperCase().replace(/^(\S+)/,"<b>$1</b>");
 document.querySelectorAll("[data-brand]").forEach(el => el.innerHTML = brandHTML);
 document.querySelectorAll("[data-name]").forEach(el => el.textContent = STORE.name);
-document.querySelectorAll("[data-address]").forEach(el => el.textContent = STORE.address);
-document.querySelectorAll("[data-phone]").forEach(el => { el.textContent = STORE.phone; el.href = "tel:" + STORE.phone.replace(/\s/g,""); });
 document.querySelectorAll("[data-email]").forEach(el => { el.textContent = STORE.email; el.href = "mailto:" + STORE.email; });
-$("mapLink").href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(STORE.address);
+const mapUrl = a => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(a);
+function openLabel(b){
+  const [, h] = b.hours[new Date().getDay()], [a, z] = h.split("–").map(x => x.trim());
+  return Store.isOpenNow(b) ? "Open till " + z : "Closed · opens " + a;
+}
+function applyBranchInfo(){
+  const b = Store.branch(BR);
+  document.querySelectorAll("[data-branch-name]").forEach(el => el.textContent = b.name);
+  document.querySelectorAll("[data-address]").forEach(el => el.textContent = b.address);
+  document.querySelectorAll("[data-phone]").forEach(el => { el.textContent = b.phone; el.href = "tel:" + b.phone.replace(/\s/g,""); });
+  $("storeHours").textContent = openLabel(b);
+  $("storeLoc").textContent = " · " + b.name + " branch";
+  $("cartBranch").innerHTML = "Ordering from <b>" + b.name + "</b> · " + esc(b.address);
+}
 $("year").textContent = new Date().getFullYear();
 
 /* =========================================================
@@ -1311,7 +1265,7 @@ function dishCard(m, i){
   const off = m.available === false;
   return `<article class="dish${off ? " off" : ""}" style="animation-delay:${Math.min(i,8)*50}ms" data-id="${m.id}">
     <div class="dish-plate" data-open>${plateHTML(m)}</div>
-    ${off ? `<span class="tag">Sold out today</span>` : m.tag ? `<span class="tag">${m.tag}</span>` : ""}
+    ${off ? `<span class="tag">Sold out at ${Store.branch(BR).name}</span>` : m.tag ? `<span class="tag">${m.tag}</span>` : ""}
     <h3 data-open>${esc(m.name)}</h3>
     <p class="desc">${esc(m.desc)}</p>
     <div class="meta">${ICON_STAR}<span>${m.score.toFixed(1)}</span><span class="dot"></span><span>${m.reviews.toLocaleString()} reviews</span><span class="dot t"></span><span class="t">${m.time}</span></div>
@@ -1332,7 +1286,7 @@ $("menuGrid").addEventListener("click", e => {
 });
 
 /* ---------- Combos ---------- */
-$("comboGrid").innerHTML = MENU.filter(m => m.cat === "Combos").map(m => `
+function renderCombos(){ $("comboGrid").innerHTML = MENU.filter(m => m.cat === "Combos").map(m => `
   <article class="combo" data-id="${m.id}">
     <span class="off-badge">Save ${naira(m.was - m.price)}</span>
     <h3>${esc(m.name)}</h3>
@@ -1340,7 +1294,8 @@ $("comboGrid").innerHTML = MENU.filter(m => m.cat === "Combos").map(m => `
     <div class="row"><button class="plus" data-open aria-label="Add ${esc(m.name)}">${ICON_PLUS}</button>
       <div><div class="now">${naira(m.price)}</div><div class="was">${naira(m.was)}</div></div></div>
     <div class="combo-plate">${plateHTML(m)}</div>
-  </article>`).join("");
+  </article>`).join(""); }
+renderCombos();
 $("comboGrid").addEventListener("click", e => { const c = e.target.closest(".combo"); if(c) openSheet(c.dataset.id); });
 
 /* ---------- Reviews ---------- */
@@ -1359,9 +1314,25 @@ $("reviewList").innerHTML = REVIEWS.map(r => `
   </article>`).join("");
 
 /* ---------- Delivery + hours ---------- */
-$("zoneList").innerHTML = ZONES.map(([z,t,f]) => `<div class="zone"><b>${z}</b><span>${t}</span><b>${naira(f)}</b></div>`).join("");
 const dayIdx = new Date().getDay();
-$("hours").innerHTML = HOURS.map(([d,h],i) => `<li class="${i===dayIdx?"today":""}">${d}${i===dayIdx?" (today)":""}<span>${h}</span></li>`).join("");
+const openTag = b => `<span class="open-tag${Store.isOpenNow(b) ? "" : " closed"}">${openLabel(b)}</span>`;
+function renderBranches(){
+  $("branchGrid").innerHTML = Store.branches().map(b => `
+    <article class="panel branch-card${b.id === BR ? " cur" : ""}">
+      <div class="bc-head"><span class="bp-badge">${b.code}</span>
+        <div><h3>${b.name}</h3><p>${esc(b.address)} · ${esc(b.phone)}</p>${openTag(b)}</div></div>
+      <div class="bc-cols">
+        <div><h4>Delivery areas</h4><div class="zone-list">${b.zones.map(z => `<div class="zone"><b>${esc(z.area)}</b><b>${naira(z.fee)}</b></div>`).join("")}</div></div>
+        <div><h4>Opening hours</h4><ul class="hours">${b.hours.map(([d,h],i) => `<li class="${i===dayIdx?"today":""}">${d.slice(0,3)}${i===dayIdx?" (today)":""}<span>${h}</span></li>`).join("")}</ul></div>
+      </div>
+      <div class="bc-foot">
+        ${b.id === BR ? `<span class="btn" style="background:var(--rose);pointer-events:none">✓ You're ordering from here</span>` : `<button class="btn" data-pick="${b.id}">Order from ${b.name}</button>`}
+        <a class="btn ghost" href="${mapUrl(b.address)}" target="_blank" rel="noopener">Directions</a>
+      </div>
+    </article>`).join("");
+}
+renderBranches();
+$("branchGrid").addEventListener("click", e => { const p = e.target.closest("[data-pick]"); if(p) setBranch(p.dataset.pick); });
 
 /* ---------- CTA plates ---------- */
 ["jollof","egusi","suya"].forEach((id,i) => document.querySelector(".cta-plate.p"+(i+1)).innerHTML = plateHTML(byId(id)));
@@ -1371,8 +1342,9 @@ $("hours").innerHTML = HOURS.map(([d,h],i) => `<li class="${i===dayIdx?"today":"
    ========================================================= */
 let cart = [];
 let orderType = "delivery";
-try { cart = JSON.parse(localStorage.getItem("cb-cart") || "[]").filter(l => byId(l.id)); } catch(e) { cart = []; }
-const save = () => { try { localStorage.setItem("cb-cart", JSON.stringify(cart)); } catch(e) {} };
+cart = Store.getCart(BR);
+const save = () => Store.setCart(BR, cart);
+try { orderType = sessionStorage.getItem("cb.type") || "delivery"; } catch(e) {}
 
 function linePrice(l){
   const m = byId(l.id);
@@ -1413,7 +1385,8 @@ function renderCart(bump){
   $("cartEmpty").hidden = !empty;
   $("cartLines").hidden = empty;
   $("cartFoot").hidden = empty;
-  const fee = orderType === "delivery" ? Math.min(...ZONES.map(z => z[2])) : 0;
+  const fee = orderType === "delivery" ? Math.min(...Store.branch(BR).zones.map(z => z.fee)) : 0;
+  $("orderType").querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.type === orderType));
   $("feeLabel").textContent = orderType === "delivery" ? "Delivery (from)" : "Pickup";
   $("fee").textContent = fee ? naira(fee) : "Free";
   $("subtotal").textContent = naira(sub);
@@ -1431,10 +1404,11 @@ $("cartLines").addEventListener("click", e => {
 $("orderType").addEventListener("click", e => {
   const b = e.target.closest("button"); if(!b) return;
   orderType = b.dataset.type;
+  try { sessionStorage.setItem("cb.type", orderType); } catch(e) {}
   $("orderType").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
   renderCart(false);
 });
-$("checkout").addEventListener("click", () => toast("Checkout page is the next step we'll build"));
+$("checkout").addEventListener("click", () => { if(cart.length) location.href = "checkout.html"; });
 
 /* ---------- open / close layers ---------- */
 let lastFocus = null;
@@ -1547,12 +1521,54 @@ $("cardScrim").addEventListener("click", () => closeCard());
 heroCard.querySelector("[data-card-close]").addEventListener("click", () => closeCard());
 matchMedia("(max-width:980px) and (min-aspect-ratio:3/4), (max-aspect-ratio:3/4)").addEventListener("change", e => { if(!e.matches) closeCard(); });
 
+/* ---------- branch picker ---------- */
+function renderPicker(){
+  $("bpGrid").innerHTML = Store.branches().map(b => `
+    <button class="bp-opt${Store.chosenBranch() === b.id ? " cur" : ""}" data-pick="${b.id}">
+      <div class="bp-top"><span class="bp-badge">${b.code}</span><div><h3>${b.name}</h3>${openTag(b)}</div></div>
+      <p class="addr">${esc(b.address)}</p>
+      <p class="areas"><b>Delivers to:</b> ${b.zones.map(z => esc(z.area)).join(", ")} · from ${naira(Math.min(...b.zones.map(z => z.fee)))}</p>
+      <span class="bp-go">Order from ${b.name}<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </button>`).join("");
+}
+function openPicker(required){
+  renderPicker();
+  $("branchPicker").classList.toggle("locked", !!required);
+  $("branchPicker").hidden = false; lock(true);
+  setTimeout(() => $("bpGrid").querySelector(".bp-opt").focus(), 50);
+}
+function closePicker(){ if($("branchPicker").classList.contains("locked")) return; $("branchPicker").hidden = true; lock(false); }
+function setBranch(id){
+  const changed = id !== BR;
+  BR = id; Store.chooseBranch(id); Store.applyBranch(BR);
+  cart = Store.getCart(BR);
+  $("branchPicker").classList.remove("locked"); $("branchPicker").hidden = true; lock(false);
+  refreshBranch();
+  let greeted = false; try { greeted = !!sessionStorage.getItem("cb.greeted"); sessionStorage.setItem("cb.greeted", "1"); } catch(e) {}
+  if(changed || !greeted) toast(`Ordering from ${Store.branch(BR).name} branch`, false);
+}
+function refreshBranch(){
+  applyBranchInfo(); renderInfo(); renderMenu(); renderCombos(); renderBranches(); renderCart(false);
+}
+$("branchChip").addEventListener("click", () => openPicker(false));
+$("bpGrid").addEventListener("click", e => { const p = e.target.closest("[data-pick]"); if(p) setBranch(p.dataset.pick); });
+$("branchPicker").addEventListener("click", e => { if(e.target === $("branchPicker") || e.target.closest("[data-bp-close]")) closePicker(); });
+document.addEventListener("keydown", e => { if(e.key === "Escape" && !$("branchPicker").hidden) closePicker(); });
+
+/* management changes prices / sold-out items → the menu updates live */
+Store.onChange(key => {
+  if(key === "menu" || key === "settings" || key === "seed"){ Store.applyBranch(BR); refreshBranch(); }
+  if(key === "cart." + BR){ cart = Store.getCart(BR); renderCart(false); }
+});
+
+applyBranchInfo();
+if(!Store.chosenBranch()) openPicker(true);
+
 renderMenu();
 renderCart(false);
 $("storeName").textContent = STORE.name;
 $("storeLogo").textContent = STORE.logo;
-$("storeHours").textContent = STORE.hours;
-$("storeLoc").textContent = STORE.location;
+
 $("today").textContent = new Date().toLocaleDateString(undefined, { weekday:"short", day:"numeric", month:"short" });
 document.title = STORE.name + " · Today's Menu";
 

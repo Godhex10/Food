@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Checkout · Commint Buka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  .page{padding:clamp(24px,4vw,44px) 0 80px}
+  .head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+  .head .sec-title{font-size:clamp(30px,4.6vw,52px)}
+  .back{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:800;color:var(--ink-soft)}
+  .back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .back:hover{color:var(--ink)}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start}
+  .steps{display:grid;gap:16px}
+  .step-h{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .step-h .n{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:900;flex:none}
+  .step-h h2{font-size:17px}
+  .step-h p{font-size:12.5px;color:var(--ink-soft)}
+  .type-seg{grid-auto-columns:1fr;height:auto}
+  .type-seg button{height:auto;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .type-seg button small{font-size:11.5px;font-weight:700;color:var(--ink-faint)}
+  .type-seg button.on small{color:var(--ink-soft)}
+  .pickup-box{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:16px;background:#fff}
+  .pickup-box b{display:block;font-size:15px}
+  .pickup-box p{font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:2px}
+  .badge-br{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,#f9c9dc,#f2a8c6);color:#3a2230;flex:none}
+  .pay-steps{list-style:none;display:grid;gap:10px;margin-top:16px;counter-reset:s}
+  .pay-steps li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.5}
+  .pay-steps li::before{content:counter(s);width:22px;height:22px;border-radius:50%;background:var(--pink-soft);color:var(--rose);font-size:12px;font-weight:900;display:grid;place-items:center;flex:none}
+  .summary{position:sticky;top:calc(var(--nav-h) + 16px)}
+  .summary .items{max-height:330px;overflow-y:auto;margin:4px -6px 14px;padding:0 6px}
+  .summary .branch{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:var(--pink-soft);margin-bottom:16px;font-size:13px}
+  .summary .branch b{display:block;font-size:14px}
+  .closed-note{padding:12px 14px;border-radius:14px;background:var(--amber-soft);color:#7a5413;font-size:13px;font-weight:700;line-height:1.45;margin-bottom:14px}
+  .place{height:54px;font-size:15.5px;border-radius:27px;margin-top:16px}
+  .fine{font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:10px;line-height:1.5}
+  .empty{text-align:center;padding:60px 20px}
+  .empty .ep{position:relative;width:130px;height:130px;margin:0 auto 18px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff,#f3f2ef 50%,#dedbd6);box-shadow:0 20px 30px -14px rgba(40,30,20,.35),inset 0 0 0 14px rgba(255,255,255,.6)}
+  .empty h2{font-size:22px;font-weight:900;margin-bottom:6px}
+  .empty .btn{margin-top:18px}
+  .mobile-bar{display:none}
+  @media (max-width:900px){
+    .grid{grid-template-columns:1fr}
+    .summary{position:static}
+    .mobile-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:rgba(250,249,247,.95);backdrop-filter:blur(12px);box-shadow:0 -1px 0 var(--line);align-items:center;gap:14px}
+    .mobile-bar div{flex:1}
+    .mobile-bar small{display:block;font-size:11.5px;color:var(--ink-soft);font-weight:700}
+    .mobile-bar b{font-size:18px;font-weight:900}
+    .mobile-bar .btn{height:48px}
+    .page{padding-bottom:110px}
+  }
+</style>
+</head>
+<body>
+<header class="navbar">
+  <div class="wrap navbar-in">
+    <a href="index.html" class="brand" id="brand"></a>
+    <div class="nav-right">
+      <a class="nav-link" href="order.html">Track order</a>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <a class="back" href="index.html#menu"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Back to menu</a>
+        <h1 class="sec-title" style="margin-top:10px"><span class="l1">CHECK</span><span class="l2">OUT</span></h1>
+      </div>
+    </div>
+
+    <div id="emptyState" class="panel empty" hidden>
+      <div class="ep"></div>
+      <h2>Your plate is empty</h2>
+      <p class="muted">Add a few dishes from the menu first.</p>
+      <a class="btn" href="index.html#menu">Browse the menu</a>
+    </div>
+
+    <form id="form" class="grid" novalidate hidden>
+      <div class="steps">
+        <section class="panel">
+          <div class="step-h"><span class="n">1</span><div><h2>Pickup or delivery?</h2><p>Delivery fees depend on your area.</p></div></div>
+          <div class="seg type-seg" id="typeSeg">
+            <button type="button" data-type="delivery">Delivery<small id="feeFrom"></small></button>
+            <button type="button" data-type="pickup">Pickup<small>Free · skip the queue</small></button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="step-h"><span class="n">2</span><div><h2>Your details</h2><p>We'll text order updates to this number.</p></div></div>
+          <div class="row2">
+            <label class="field" data-f="name"><span>Full name</span><input class="input" id="name" autocomplete="name" placeholder="e.g. Tolu Adebayo"><div class="errmsg"></div></label>
+            <label class="field" data-f="phone"><span>Phone number</span><input class="input" id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 0803 123 4567"><div class="errmsg"></div></label>
+          </div>
+        </section>
+
+        <section class="panel" id="deliveryBox">
+          <div class="step-h"><span class="n">3</span><div><h2>Delivery address</h2><p>Choose your area so we can apply the right fee.</p></div></div>
+          <label class="field" data-f="area"><span>Area</span><select class="select" id="area"></select><div class="errmsg"></div></label>
+          <label class="field" data-f="street"><span>Street address</span><input class="input" id="street" autocomplete="street-address" placeholder="House number and street"><div class="errmsg"></div></label>
+          <label class="field" data-f="extra"><span>Additional information <em>(optional)</em></span><textarea class="textarea" id="extra" rows="2" placeholder="Landmark, estate gate, floor, closest bus stop…"></textarea></label>
+        </section>
+
+        <section class="panel" id="pickupBox" hidden>
+          <div class="step-h"><span class="n">3</span><div><h2>Pickup point</h2><p>Show your order number at the counter.</p></div></div>
+          <div class="pickup-box"><span class="badge-br" data-code></span><div><b data-bname></b><p data-baddr></p><p>We'll text you as soon as your order is ready.</p></div></div>
+        </section>
+
+        <section class="panel">
+          <div class="step-h"><span class="n">4</span><div><h2>Special instructions</h2><p>Anything the kitchen or rider should know.</p></div></div>
+          <textarea class="textarea" id="instructions" rows="2" placeholder="E.g. pack stew separately, call when outside"></textarea>
+        </section>
+
+        <section class="panel">
+          <div class="step-h"><span class="n">5</span><div><h2>Payment</h2><p>Bank transfer to our Providus account.</p></div></div>
+          <div id="bank"></div>
+          <ol class="pay-steps">
+            <li>Place your order to get your order number.</li>
+            <li>Transfer the exact total, using your order number as the narration.</li>
+            <li>The branch confirms your payment and starts packing. You'll get a text at every step.</li>
+          </ol>
+        </section>
+      </div>
+
+      <aside class="panel summary" aria-label="Order summary">
+        <div class="panel-title"><h3>Order summary</h3><a class="back" href="index.html#menu">Edit</a></div>
+        <div class="branch"><span class="badge-br" data-code></span><div><b><span data-bname></span> branch</b><span class="muted" data-baddr></span></div></div>
+        <div id="closedNote" class="closed-note" hidden></div>
+        <div id="items"></div>
+        <div class="sum"><span>Subtotal</span><b id="subtotal"></b></div>
+        <div class="sum"><span id="feeLabel"></span><b id="fee"></b></div>
+        <div class="sum total"><span>Total</span><b id="total"></b></div>
+        <button class="btn block place" id="place">Place order</button>
+        <p class="fine">Demo prototype: no real payment is taken and no real SMS is sent.</p>
+      </aside>
+    </form>
+  </div>
+</main>
+
+<div class="mobile-bar" id="mobileBar" hidden>
+  <div><small>Total</small><b id="mTotal"></b></div>
+  <button class="btn" id="mPlace">Place order</button>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/ui.js"></script>
+<script>
+const { $, esc } = UI;
+const BR = Store.chosenBranch() || "allen";
+const b = Store.branch(BR);
+let type = "delivery";
+try { type = sessionStorage.getItem("cb.type") || "delivery"; } catch(e) {}
+let cart = Store.getCart(BR).filter(l => Store.itemFor(BR, l.id).available);
+
+$("brand").innerHTML = UI.brandHTML();
+document.querySelectorAll("[data-code]").forEach(e => e.textContent = b.code);
+document.querySelectorAll("[data-bname]").forEach(e => e.textContent = b.name);
+document.querySelectorAll("[data-baddr]").forEach(e => e.textContent = b.address);
+$("bank").innerHTML = UI.bankHTML();
+$("feeFrom").textContent = "From " + naira(Math.min(...b.zones.map(z => z.fee)));
+$("area").innerHTML = `<option value="">Select your area…</option>` + b.zones.map(z => `<option value="${esc(z.area)}">${esc(z.area)} · ${naira(z.fee)} · ${z.eta}</option>`).join("");
+if(!Store.isOpenNow(b)){ $("closedNote").hidden = false; $("closedNote").textContent = `${b.name} is closed right now. You can still order; the branch will confirm it when it opens.`; }
+
+/* restore what the customer typed last time on this device */
+try { const me = JSON.parse(localStorage.getItem("cb.me") || "{}"); ["name","phone","street","extra"].forEach(k => { if(me[k]) $(k).value = me[k]; }); if(me.area && b.zones.some(z => z.area === me.area)) $("area").value = me.area; } catch(e) {}
+
+function render(){
+  if(!cart.length){ $("form").hidden = true; $("mobileBar").hidden = true; $("emptyState").hidden = false; return; }
+  $("form").hidden = false; $("mobileBar").hidden = false;
+  $("typeSeg").querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.type === type));
+  $("deliveryBox").hidden = type !== "delivery"; $("pickupBox").hidden = type !== "pickup";
+  const items = cart.map(l => { const m = Store.itemFor(BR, l.id), unit = m.price + Store.optPrice(l.sel); return { id:l.id, name:m.name, qty:l.qty, sel:l.sel, note:l.note, total:unit * l.qty }; });
+  $("items").innerHTML = UI.itemsHTML({ items });
+  const sub = items.reduce((t, i) => t + i.total, 0);
+  const zone = b.zones.find(z => z.area === $("area").value);
+  const fee = type === "delivery" ? (zone ? zone.fee : null) : 0;
+  $("subtotal").textContent = naira(sub);
+  $("feeLabel").textContent = type === "delivery" ? (zone ? "Delivery · " + zone.area : "Delivery") : "Pickup";
+  $("fee").textContent = fee == null ? "Select area" : fee ? naira(fee) : "Free";
+  $("total").textContent = $("mTotal").textContent = naira(sub + (fee || 0));
+}
+$("typeSeg").addEventListener("click", e => { const x = e.target.closest("button"); if(!x) return; type = x.dataset.type; try { sessionStorage.setItem("cb.type", type); } catch(e) {} render(); });
+$("area").addEventListener("change", () => { clearErr("area"); render(); });
+["name","phone","street"].forEach(id => $(id).addEventListener("input", () => clearErr(id)));
+
+function setErr(id, msg){ const f = document.querySelector(`[data-f="${id}"]`); f.classList.add("err"); f.querySelector(".errmsg").textContent = msg; }
+function clearErr(id){ const f = document.querySelector(`[data-f="${id}"]`); f && f.classList.remove("err"); }
+function validPhone(p){ const d = p.replace(/[\s-]/g, ""); return /^(0[789][01]\d{8}|\+?234[789][01]\d{8})$/.test(d); }
+
+function submit(e){
+  e && e.preventDefault();
+  const v = { name:$("name").value.trim(), phone:$("phone").value.trim(), area:$("area").value, street:$("street").value.trim(), extra:$("extra").value.trim() };
+  let first = null;
+  const bad = (id, msg) => { setErr(id, msg); first = first || id; };
+  if(v.name.length < 2) bad("name", "Please enter your name.");
+  if(!validPhone(v.phone)) bad("phone", "Enter a valid Nigerian number, e.g. 0803 123 4567.");
+  if(type === "delivery"){ if(!v.area) bad("area", "Choose your delivery area."); if(v.street.length < 4) bad("street", "Enter your street address."); }
+  if(first){ $(first).focus(); $(first).scrollIntoView({ block:"center", behavior:"smooth" }); return; }
+  try { localStorage.setItem("cb.me", JSON.stringify(v)); } catch(e) {}
+  $("place").disabled = $("mPlace").disabled = true;
+  $("place").textContent = "Placing order…";
+  const o = Store.createOrder({
+    branch:BR, type, items:cart, instructions:$("instructions").value.trim(),
+    customer:{ name:v.name, phone:v.phone.replace(/[\s-]/g, "") },
+    address:{ area:v.area, street:v.street, extra:v.extra }
+  });
+  Store.setCart(BR, []);
+  try { const mine = JSON.parse(localStorage.getItem("cb.mine") || "[]"); mine.unshift(o.id); localStorage.setItem("cb.mine", JSON.stringify(mine.slice(0, 10))); } catch(e) {}
+  location.href = "order.html?id=" + encodeURIComponent(o.id) + "&new=1";
+}
+$("form").addEventListener("submit", submit);
+$("mPlace").addEventListener("click", submit);
+Store.onChange(k => { if(k === "menu"){ cart = Store.getCart(BR).filter(l => Store.itemFor(BR, l.id).available); render(); } });
+render();
+</script>
+</body>
+</html>

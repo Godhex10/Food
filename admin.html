@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Management · Commint Buka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/console.css">
+</head>
+<body class="console">
+
+<!-- ============ Login ============ -->
+<main class="login" id="loginView" hidden>
+  <form class="login-card" id="loginForm" novalidate>
+    <a class="brand" href="index.html" data-brand></a>
+    <h1>Management login</h1>
+    <p>Central view of both branches: orders, sales, menu and staff.</p>
+    <div class="login-err" id="loginErr"></div>
+    <label class="field"><span>Username</span><input class="input" id="lUser" autocomplete="username" autocapitalize="none"></label>
+    <label class="field"><span>PIN</span><input class="input" id="lPin" type="password" inputmode="numeric" autocomplete="current-password"></label>
+    <button class="btn block">Sign in</button>
+    <div class="demo-acc">
+      <p>Demo account · tap to fill</p>
+      <button type="button" data-fill="manager|0000"><b>Management</b><code>manager / 0000</code></button>
+    </div>
+    <div class="login-links"><a href="index.html">← Customer site</a><a href="staff.html">Branch staff login</a></div>
+  </form>
+</main>
+
+<!-- ============ App ============ -->
+<div id="appView" hidden>
+  <header class="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="index.html" data-brand></a>
+      <div class="where"><small>Management</small><span>Both branches</span></div>
+      <div class="right">
+        <a class="pill-btn hide-sm" href="index.html" target="_blank">Customer site ↗</a>
+        <a class="pill-btn hide-sm" href="staff.html" target="_blank">Staff view ↗</a>
+        <div class="who"><span class="av">M</span><div><span id="whoName"></span><small>Signed in</small></div></div>
+        <button class="icon-btn" id="logout" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <div class="admin">
+    <nav class="sidenav" id="nav">
+      <button data-view="overview"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 4v4h6V4z"/></svg>Overview<span class="badge" id="alertBadge" hidden></span></button>
+      <button data-view="orders"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Orders</button>
+      <button data-view="reports"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Sales reports</button>
+      <button data-view="menu"><svg viewBox="0 0 24 24"><path d="M7 3v5a2 2 0 0 1-4 0V3M5 8v13M17 3c-2 0-3 2.5-3 5.5S15 12 17 12m0-9v18"/></svg>Menu &amp; prices</button>
+      <button data-view="staff"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c2 .7 3.2 2.6 3.5 5.5"/></svg>Staff &amp; access</button>
+      <button data-view="activity"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Activity log</button>
+      <button data-view="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
+      <div class="sep"></div>
+      <button data-view="rush"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Rush test</button>
+      <p class="foot">Demo prototype · data is stored in this browser only.</p>
+    </nav>
+    <main class="view" id="view"></main>
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/ui.js"></script>
+<script src="assets/console.js"></script>
+<script>
+const { $, esc } = UI;
+document.querySelectorAll("[data-brand]").forEach(e => e.innerHTML = UI.brandHTML());
+const COL = { allen:"#353537", ikeja:"#e0457b" };
+const BNAME = id => Store.branch(id).name;
+const DAY = 864e5;
+const startOfDay = (t = Date.now()) => { const d = new Date(t); d.setHours(0,0,0,0); return d.getTime(); };
+let user = Store.session("manager"), view = "overview", rushing = false;
+
+/* ---------- login ---------- */
+$("loginForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const r = Store.login($("lUser").value, $("lPin").value, "manager");
+  if(r.error){ $("loginErr").textContent = r.error; $("loginErr").classList.add("show"); return; }
+  user = r.user; start();
+});
+document.querySelectorAll("[data-fill]").forEach(b => b.addEventListener("click", () => { const [u, p] = b.dataset.fill.split("|"); $("lUser").value = u; $("lPin").value = p; }));
+$("logout").addEventListener("click", () => { Store.logout("manager"); location.href = "admin.html"; });
+
+function start(){
+  $("loginView").hidden = true; $("appView").hidden = false;
+  $("whoName").textContent = user.name;
+  Console.init({ user:() => user });
+  let t;
+  Store.onChange(k => { if(rushing && view === "rush") return; clearTimeout(t); t = setTimeout(() => { if(!document.querySelector(".modal") && !isTyping()) show(view, true); badge(); }, 250); });
+  setInterval(() => { if(!document.querySelector(".modal") && !isTyping() && (view === "overview" || view === "orders")) show(view, true); badge(); }, 20000);
+  Console.startPrinterLoop();
+  const h = location.hash.slice(1); show(VIEWS[h] ? h : "overview"); badge();
+}
+const isTyping = () => document.activeElement && document.activeElement.matches("input,textarea,select") && document.activeElement.closest("#view");
+$("nav").addEventListener("click", e => { const b = e.target.closest("[data-view]"); if(b) show(b.dataset.view); });
+function show(v, keepScroll){
+  view = v; history.replaceState(null, "", "#" + v);
+  document.querySelectorAll("#nav [data-view]").forEach(b => b.classList.toggle("on", b.dataset.view === v));
+  const y = scrollY;
+  const old = $("view"), fresh = old.cloneNode(false);          // fresh element = no stale listeners
+  fresh.innerHTML = VIEWS[v](); old.replaceWith(fresh); (BIND[v] || (() => {}))();
+  if(keepScroll) scrollTo(0, y); else scrollTo(0, 0);
+}
+function badge(){
+  const n = Store.orders(o => Store.delayInfo(o).late || Store.printState(o) === "failed").length;
+  $("alertBadge").hidden = !n; $("alertBadge").textContent = n;
+}
+const head = (title, sub, tools = "") => `<div class="view-head"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div><div class="tools">${tools}</div></div>`;
+const seg = (id, opts, cur) => `<div class="seg" id="${id}" style="height:38px;padding:3px">${opts.map(([v, l]) => `<button data-v="${v}" class="${v === cur ? "on" : ""}" style="height:32px;padding:0 12px;font-size:12.5px">${l}</button>`).join("")}</div>`;
+function onSeg(id, fn){ $(id).addEventListener("click", e => { const b = e.target.closest("[data-v]"); if(b) fn(b.dataset.v); }); }
+const revenueOf = list => list.filter(o => o.status !== "cancelled" && o.payment.status === "paid").reduce((s, o) => s + o.total, 0);
+
+/* =========================================================
+   VIEWS
+   ========================================================= */
+const VIEWS = {}, BIND = {};
+
+/* ---------- overview ---------- */
+VIEWS.overview = () => {
+  const all = Store.orders(), today = all.filter(o => o.createdAt >= startOfDay());
+  const yday = all.filter(o => o.createdAt >= startOfDay() - DAY && o.createdAt < startOfDay());
+  const by = b => today.filter(o => o.branch === b);
+  const rev = revenueOf(today), revY = revenueOf(yday);
+  const active = all.filter(Store.isOpen);
+  const late = all.filter(o => Store.delayInfo(o).late), failed = all.filter(o => Store.printState(o) === "failed");
+  const pr = Store.printers();
+  const split = fn => `<div class="split">${Store.branches().map(b => `<span><i style="background:${COL[b.id]}"></i>${b.name} ${fn(b.id)}</span>`).join("")}</div>`;
+  const liveCol = b => {
+    const list = active.filter(o => o.branch === b).sort((x, y) => x.createdAt - y.createdAt);
+    return `<section class="panel"><div class="panel-title"><h3><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${COL[b]};margin-right:8px"></span>${BNAME(b)} · live queue</h3>
+      <span class="pill-btn${pr[b] && pr[b].online === false ? " off" : ""}" style="height:28px"><span class="led"></span>Printer ${pr[b] && pr[b].online === false ? "offline" : "online"}</span></div>
+      <div class="stat-strip">${["new","confirmed","preparing","ready","out"].map(s => { const n = list.filter(o => o.status === s).length; return n ? `<span class="tag ${Store.STATUS[s].tone}">${Store.STATUS[s].label} · ${n}</span>` : ""; }).join("") || `<span class="muted small">No active orders</span>`}</div>
+      <div class="live-col">${list.map(o => { const l = Console.lateText(o); return `<div class="live-row" data-open="${o.id}"><span class="mono">${o.id}</span><span class="muted">${esc(o.customer.name)}</span><span class="r">${l ? `<span class="tag red">${l}</span>` : `<span class="muted small">${UI.ago(o.createdAt)}</span>`}${UI.statusTag(o.status)}</span></div>`; }).join("")}</div></section>`;
+  };
+  const acts = Store.activity().slice(0, 8);
+  return head("Good " + (new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"), `Live view of both branches · ${UI.date(Date.now())}`,
+      `<button class="btn sm ghost" data-goto="reports">Sales reports</button><button class="btn sm" data-goto="rush">Run rush test</button>`)
+    + `<div class="alerts">${late.length ? `<div class="alert red">${Console.ICON.warn}<span>${late.length} order${late.length > 1 ? "s" : ""} past the agreed time limit: ${late.map(o => `${o.id} (${BNAME(o.branch)}, ${Console.lateText(o).replace("Late · ", "")})`).join(", ")}</span><button class="btn sm danger" data-open="${late[0].id}">Open</button></div>` : ""}
+      ${failed.length ? `<div class="alert red">${Console.ICON.print}<span>${failed.length} ticket${failed.length > 1 ? "s" : ""} failed to print (${failed.map(o => o.id).join(", ")}). Orders are retained.</span><button class="btn sm danger" data-open="${failed[0].id}">Open</button></div>` : ""}</div>`
+    + `<div class="kpis">
+      <div class="kpi"><small>Sales today</small><b>${naira(rev)}</b>${split(b => naira(revenueOf(by(b))))}</div>
+      <div class="kpi"><small>Orders today</small><b>${today.length}</b>${split(b => by(b).length)}</div>
+      <div class="kpi"><small>Active right now</small><b>${active.length}</b>${split(b => active.filter(o => o.branch === b).length)}</div>
+      <div class="kpi"><small>Yesterday</small><b>${naira(revY)}</b><span>${yday.length} orders · ${rev >= revY ? "today is ahead" : naira(revY - rev) + " to match"}</span></div>
+    </div>
+    <div class="grid2">${liveCol("allen")}${liveCol("ikeja")}</div>
+    <section class="panel"><div class="panel-title"><h3>Latest activity</h3><button class="btn sm ghost" data-goto="activity">Full log</button></div>
+      <table class="t"><tbody>${acts.map(a => `<tr><td style="width:90px" class="muted">${UI.time(a.at)}</td><td style="width:150px"><b>${esc(a.by.name)}</b></td><td>${esc(a.text)}</td></tr>`).join("")}</tbody></table></section>`;
+};
+
+/* ---------- orders ---------- */
+const OF = { branch:"all", status:"all", range:"today", q:"" };
+function filteredOrders(){
+  const from = { today:startOfDay(), "7d":startOfDay() - 6 * DAY, "30d":startOfDay() - 29 * DAY, all:0 }[OF.range];
+  const q = OF.q.toLowerCase().replace(/\s/g, "");
+  return Store.orders(o => o.createdAt >= from && (OF.branch === "all" || o.branch === OF.branch)
+    && (OF.status === "all" || (OF.status === "active" ? Store.isOpen(o) : OF.status === "late" ? Store.delayInfo(o).late : o.status === OF.status))
+    && (!q || (o.id + o.customer.name + o.customer.phone).toLowerCase().replace(/\s/g, "").includes(q)));
+}
+VIEWS.orders = () => {
+  const list = filteredOrders();
+  return head("Orders", "Every order from both branches. Click a row to manage it.", `<button class="btn sm ghost" id="exportOrders">Export to Excel</button>`)
+    + `<div class="panel" style="padding:14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        ${seg("fBranch", [["all","Both branches"],["allen","Allen"],["ikeja","Ikeja"]], OF.branch)}
+        ${seg("fRange", [["today","Today"],["7d","7 days"],["30d","30 days"],["all","All"]], OF.range)}
+        <select class="select" id="fStatus" style="width:auto;height:38px">${[["all","All statuses"],["active","Active"],["late","Late"],...Object.entries(Store.STATUS).map(([k, v]) => [k, v.label])].map(([v, l]) => `<option value="${v}"${v === OF.status ? " selected" : ""}>${l}</option>`).join("")}</select>
+        <label class="search-sm" style="margin-left:auto"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg><input id="fQ" value="${esc(OF.q)}" placeholder="Order, name, phone"></label>
+      </div>
+      <section class="panel" style="padding:8px">
+        <div class="table-wrap"><table class="t"><thead><tr><th>Order</th><th>Branch</th><th>Placed</th><th>Customer</th><th>Type</th><th>Status</th><th>Payment</th><th>Print</th><th class="num">Total</th></tr></thead><tbody>
+        ${list.slice(0, 200).map(o => `<tr class="click" data-open="${o.id}"><td class="mono"><b>${o.id}</b></td><td>${BNAME(o.branch)}</td><td class="muted">${o.createdAt >= startOfDay() ? UI.time(o.createdAt) : UI.date(o.createdAt)}</td><td>${esc(o.customer.name)}</td><td>${UI.typeTag(o)}</td><td>${UI.statusTag(o.status)}${Store.delayInfo(o).late ? ' <span class="tag red">Late</span>' : ""}</td><td>${UI.payTag(o)}</td><td>${UI.printTag(o)}</td><td class="num"><b>${naira(o.total)}</b></td></tr>`).join("") || `<tr><td colspan="9" class="muted" style="text-align:center;padding:30px">No orders match these filters.</td></tr>`}
+        </tbody></table></div>
+        <p class="muted small" style="padding:10px 12px">${list.length} order${list.length === 1 ? "" : "s"} · ${naira(revenueOf(list))} paid${list.length > 200 ? " · showing the latest 200" : ""}</p>
+      </section>`;
+};
+BIND.orders = () => {
+  onSeg("fBranch", v => { OF.branch = v; show("orders", true); });
+  onSeg("fRange", v => { OF.range = v; show("orders", true); });
+  $("fStatus").onchange = e => { OF.status = e.target.value; show("orders", true); };
+  $("fQ").oninput = e => { OF.q = e.target.value; clearTimeout(window._q); window._q = setTimeout(() => { show("orders", true); const i = $("fQ"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 250); };
+  $("exportOrders").onclick = () => exportOrders(filteredOrders(), "orders");
+};
+function exportOrders(list, name){
+  UI.downloadCSV(`commint-buka-${name}-${new Date().toISOString().slice(0, 10)}.csv`, [
+    ["Order number","Branch","Date","Time","Type","Customer","Phone","Area","Address","Items","Subtotal","Delivery fee","Total","Payment","Status","Cancel reason","Completed at"],
+    ...list.map(o => [o.id, BNAME(o.branch), UI.date(o.createdAt), UI.time(o.createdAt), o.type, o.customer.name, o.customer.phone, o.address ? o.address.area : "", o.address ? o.address.street : "",
+      o.items.map(i => `${i.qty}x ${i.name}${UI.optsText(i.sel) ? " (" + UI.optsText(i.sel) + ")" : ""}`).join("; "), o.subtotal, o.fee, o.total, o.payment.status, Store.STATUS[o.status].label, o.cancelReason,
+      o.status === "completed" ? UI.dateTime(o.statusAt) : ""])
+  ]);
+  UI.toast("Excel file downloaded");
+}
+
+/* ---------- reports ---------- */
+const RP = { period:"daily", branch:"all" };
+function buckets(){
+  const now = new Date(), out = [];
+  if(RP.period === "daily") for(let i = 13; i >= 0; i--){ const s = startOfDay() - i * DAY; out.push({ s, e:s + DAY, label:new Date(s).toLocaleDateString("en-NG", { day:"numeric", month:"short" }), short:new Date(s).toLocaleDateString("en-NG", { weekday:"short" }).slice(0, 2) + " " + new Date(s).getDate() }); }
+  if(RP.period === "weekly"){ const d = new Date(startOfDay()); const mon = d.getTime() - ((d.getDay() + 6) % 7) * DAY; for(let i = 7; i >= 0; i--){ const s = mon - i * 7 * DAY; out.push({ s, e:s + 7 * DAY, label:"Week of " + new Date(s).toLocaleDateString("en-NG", { day:"numeric", month:"short" }), short:new Date(s).toLocaleDateString("en-NG", { day:"numeric", month:"short" }) }); } }
+  if(RP.period === "monthly") for(let i = 5; i >= 0; i--){ const s = new Date(now.getFullYear(), now.getMonth() - i, 1).getTime(), e = new Date(now.getFullYear(), now.getMonth() - i + 1, 1).getTime(); out.push({ s, e, label:new Date(s).toLocaleDateString("en-NG", { month:"long", year:"numeric" }), short:new Date(s).toLocaleDateString("en-NG", { month:"short" }) }); }
+  return out;
+}
+function barChart(rows, branches){
+  const W = 760, H = 260, L = 56, B = 30, T = 12, max = Math.max(1, ...rows.flatMap(r => branches.map(b => r[b])));
+  const nice = Math.pow(10, Math.floor(Math.log10(max))), top = Math.ceil(max / nice) * nice;
+  const gw = (W - L) / rows.length, bw = Math.min(26, (gw - 10) / branches.length);
+  const y = v => T + (H - T - B) * (1 - v / top);
+  let svg = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Sales chart"><g class="grid">`;
+  for(let i = 0; i <= 4; i++){ const v = top * i / 4; svg += `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v >= 1e6 ? (v / 1e6).toFixed(1) + "m" : v >= 1e3 ? Math.round(v / 1e3) + "k" : v}</text>`; }
+  svg += `</g>`;
+  rows.forEach((r, i) => {
+    const x0 = L + i * gw + (gw - bw * branches.length) / 2;
+    branches.forEach((b, j) => { const h = H - B - y(r[b]); svg += `<rect class="bar" x="${x0 + j * bw}" y="${y(r[b])}" width="${bw - 3}" height="${Math.max(0, h)}" rx="4" fill="${COL[b]}"><title>${BNAME(b)} · ${r.label}: ${naira(r[b])}</title></rect>`; });
+    svg += `<text x="${L + i * gw + gw / 2}" y="${H - 10}" text-anchor="middle">${r.short}</text>`;
+  });
+  return svg + `</svg>`;
+}
+function reportData(){
+  const bs = buckets(), all = Store.orders(o => o.createdAt >= bs[0].s && o.createdAt < bs[bs.length - 1].e);
+  const scope = RP.branch === "all" ? ["allen","ikeja"] : [RP.branch];
+  const inScope = all.filter(o => scope.includes(o.branch));
+  const rows = bs.map(bk => { const r = { label:bk.label, short:bk.short, orders:0 }; scope.forEach(b => { const l = all.filter(o => o.branch === b && o.createdAt >= bk.s && o.createdAt < bk.e); r[b] = revenueOf(l); r[b + "_n"] = l.filter(o => o.status !== "cancelled").length; r.orders += r[b + "_n"]; }); r.total = scope.reduce((s, b) => s + r[b], 0); return r; });
+  return { bs, all, scope, inScope, rows };
+}
+VIEWS.reports = () => {
+  const { all, scope, inScope, rows } = reportData();
+  const good = inScope.filter(o => o.status !== "cancelled"), rev = revenueOf(inScope);
+  const cancelled = inScope.filter(o => o.status === "cancelled").length;
+  /* best sellers */
+  const agg = {};
+  good.forEach(o => o.items.forEach(i => { agg[i.id] = agg[i.id] || { id:i.id, name:i.name, qty:0, rev:0 }; agg[i.id].qty += i.qty; agg[i.id].rev += i.total; }));
+  const best = Object.values(agg).sort((a, b) => b.qty - a.qty).slice(0, 8), maxQ = best.length ? best[0].qty : 1;
+  /* branch comparison */
+  const stat = b => { const l = all.filter(o => o.branch === b), g = l.filter(o => o.status !== "cancelled"), done = l.filter(o => o.status === "completed");
+    return { rev:revenueOf(l), n:g.length, aov:g.length ? revenueOf(l) / g.length : 0, cancel:l.length ? l.filter(o => o.status === "cancelled").length / l.length * 100 : 0,
+      mins:done.length ? done.reduce((s, o) => s + (o.statusAt - o.createdAt), 0) / done.length / 60000 : 0, del:g.length ? g.filter(o => o.type === "delivery").length / g.length * 100 : 0 }; };
+  const A = stat("allen"), K = stat("ikeja");
+  const vs = (label, a, k, fmt, lowerIsBetter) => { const aw = lowerIsBetter ? a < k : a > k; return `<div class="vs"><div class="l ${aw ? "win" : ""}">${fmt(a)}</div><span>${label}</span><div class="r ${!aw && a !== k ? "win" : ""}">${fmt(k)}</div></div>`; };
+  const periodName = { daily:"last 14 days", weekly:"last 8 weeks", monthly:"last 6 months" }[RP.period];
+  return head("Sales reports", `Branch-level and combined sales · ${periodName}`, `${seg("rBranch", [["all","Combined"],["allen","Allen"],["ikeja","Ikeja"]], RP.branch)}${seg("rPeriod", [["daily","Daily"],["weekly","Weekly"],["monthly","Monthly"]], RP.period)}<button class="btn sm ghost" id="exportSummary">Export summary</button><button class="btn sm" id="exportDetail">Export orders</button>`)
+    + `<div class="kpis">
+        <div class="kpi"><small>Sales</small><b>${naira(rev)}</b><span>${periodName}</span></div>
+        <div class="kpi"><small>Orders</small><b>${good.length.toLocaleString()}</b><span>${cancelled} cancelled</span></div>
+        <div class="kpi"><small>Average order</small><b>${naira(good.length ? rev / good.length : 0)}</b><span>per paid order</span></div>
+        <div class="kpi"><small>Delivery share</small><b>${good.length ? Math.round(good.filter(o => o.type === "delivery").length / good.length * 100) : 0}%</b><span>of orders</span></div>
+      </div>
+      <section class="panel" style="margin-bottom:18px"><div class="panel-title"><h3>Sales by ${RP.period === "daily" ? "day" : RP.period === "weekly" ? "week" : "month"}</h3>
+        <div class="legend">${scope.map(b => `<span><i style="background:${COL[b]}"></i>${BNAME(b)}</span>`).join("")}</div></div>
+        ${barChart(rows, scope)}
+        <div class="table-wrap" style="margin-top:12px"><table class="t"><thead><tr><th>Period</th>${scope.map(b => `<th class="num">${BNAME(b)}</th>`).join("")}${scope.length > 1 ? `<th class="num">Combined</th>` : ""}<th class="num">Orders</th></tr></thead><tbody>
+          ${rows.slice().reverse().map(r => `<tr><td>${r.label}</td>${scope.map(b => `<td class="num">${naira(r[b])}</td>`).join("")}${scope.length > 1 ? `<td class="num"><b>${naira(r.total)}</b></td>` : ""}<td class="num">${r.orders}</td></tr>`).join("")}
+        </tbody></table></div></section>
+      <div class="grid2">
+        <section class="panel"><div class="panel-title"><h3>Best-selling items</h3><span class="muted small">${RP.branch === "all" ? "Both branches" : BNAME(RP.branch)}</span></div>
+          ${best.map(x => `<div class="hbar"><div class="mini-plate">${UI.plate(byId(x.id).img, x.name)}</div><div><b>${esc(x.name)}</b><div class="track"><i style="width:${x.qty / maxQ * 100}%"></i></div></div><div class="num"><b>${x.qty}</b><br><span class="muted small">${naira(x.rev)}</span></div></div>`).join("") || `<p class="muted">No sales in this period.</p>`}
+        </section>
+        <section class="panel"><div class="panel-title"><h3>Branch comparison</h3><span class="muted small">${periodName}</span></div>
+          <div class="vs" style="border-bottom:1px solid var(--line)"><div class="l" style="color:${COL.allen}">Allen</div><span></span><div class="r" style="color:${COL.ikeja}">Ikeja</div></div>
+          ${vs("Sales", A.rev, K.rev, naira)}${vs("Orders", A.n, K.n, v => v.toLocaleString())}${vs("Avg order", A.aov, K.aov, naira)}
+          ${vs("Placed → done", A.mins, K.mins, v => Math.round(v) + " min", true)}${vs("Cancelled", A.cancel, K.cancel, v => v.toFixed(1) + "%", true)}${vs("Delivery share", A.del, K.del, v => Math.round(v) + "%")}
+        </section>
+      </div>`;
+};
+BIND.reports = () => {
+  onSeg("rBranch", v => { RP.branch = v; show("reports", true); });
+  onSeg("rPeriod", v => { RP.period = v; show("reports", true); });
+  $("exportSummary").onclick = () => { const { rows, scope } = reportData(); UI.downloadCSV(`commint-buka-sales-${RP.period}-${new Date().toISOString().slice(0, 10)}.csv`, [["Period", ...scope.map(b => BNAME(b) + " sales"), ...scope.map(b => BNAME(b) + " orders"), "Combined sales", "Orders"], ...rows.map(r => [r.label, ...scope.map(b => r[b]), ...scope.map(b => r[b + "_n"]), r.total, r.orders])]); UI.toast("Excel file downloaded"); };
+  $("exportDetail").onclick = () => exportOrders(reportData().inScope, "orders-" + RP.period);
+};
+
+/* ---------- menu ---------- */
+VIEWS.menu = () => {
+  const ov = Store.overrides();
+  const cell = (b, m) => { const it = Store.itemFor(b, m.id); return `<td><input class="price-in${it.price !== m.base ? " changed" : ""}" data-price="${b}|${m.id}" value="${it.price}" inputmode="numeric" aria-label="${BNAME(b)} price for ${esc(m.name)}"></td>
+      <td><span class="avail"><button class="switch" role="switch" aria-checked="${it.available}" data-avail="${b}|${m.id}" aria-label="${BNAME(b)}: ${esc(m.name)} available"></button>${it.available ? "On" : `<span style="color:var(--red)">Sold out</span>`}</span></td>`; };
+  return head("Menu & prices", "Each branch has its own prices and availability. Changes go live on the customer site instantly.", `<span class="tag pink plain">Pink border = differs from standard price</span>`)
+    + `<section class="panel" style="padding:8px"><div class="table-wrap"><table class="t"><thead>
+        <tr><th></th><th>Item</th><th class="num">Standard</th><th colspan="2" style="color:${COL.allen}">Allen</th><th colspan="2" style="color:${COL.ikeja}">Ikeja</th><th></th></tr></thead><tbody>
+        ${MENU.map(m => `<tr class="menu-row"><td style="width:56px"><div class="mini-plate">${UI.plate(m.img, m.name)}</div></td><td><b>${esc(m.name)}</b><br><span class="muted small">${m.cat}</span></td><td class="num muted">${naira(m.base)}</td>${cell("allen", m)}${cell("ikeja", m)}<td><button class="btn sm ghost" data-edit="${m.id}">Edit…</button></td></tr>`).join("")}
+      </tbody></table></div></section>
+      <p class="muted small" style="margin-top:12px">Marking an item sold out at one branch does not affect the other branch. Use “Edit…” to change both at once.</p>`;
+};
+BIND.menu = () => {
+  $("view").addEventListener("change", e => {
+    const p = e.target.closest("[data-price]"); if(!p) return;
+    const [b, id] = p.dataset.price.split("|"), v = Math.round(+String(p.value).replace(/[^\d]/g, ""));
+    if(!v || v < 50){ UI.toast("Enter a valid price"); show("menu", true); return; }
+    Store.setMenuItem([b], id, { price:v }, user); UI.toast(`${byId(id).name}: ${naira(v)} at ${BNAME(b)}`);
+  });
+  $("view").addEventListener("click", async e => {
+    const a = e.target.closest("[data-avail]");
+    if(a){ const [b, id] = a.dataset.avail.split("|"), on = a.getAttribute("aria-checked") === "true"; Store.setMenuItem([b], id, { available:!on }, user); UI.toast(`${byId(id).name} ${on ? "sold out" : "available again"} at ${BNAME(b)} only`); return; }
+    const ed = e.target.closest("[data-edit]"); if(!ed) return;
+    const m = byId(ed.dataset.edit), A = Store.itemFor("allen", m.id);
+    const r = await UI.dialog({ title:"Edit " + m.name, body:"Choose which branch the change applies to.", ok:"Apply change", fields:[
+      { name:"scope", label:"Apply to", type:"select", value:"both", options:[["both","Both branches"],["allen","Allen only"],["ikeja","Ikeja only"]] },
+      { name:"price", label:"Price (₦)", type:"number", value:A.price, required:true, validate:v => +v >= 50 ? "" : "Enter a valid price" },
+      { name:"available", label:"Available to order", type:"check", value:A.available }
+    ]});
+    if(!r) return;
+    const bs = r.scope === "both" ? ["allen","ikeja"] : [r.scope];
+    Store.setMenuItem(bs, m.id, { price:r.price, available:r.available }, user);
+    UI.toast(`${m.name} updated for ${bs.map(BNAME).join(" & ")}`);
+  });
+};
+
+/* ---------- staff ---------- */
+VIEWS.staff = () => head("Staff & access", "Branch staff only see their own branch unless you give them access to both.", `<button class="btn sm" id="addUser">Add account</button>`)
+  + `<section class="panel" style="padding:8px"><div class="table-wrap"><table class="t"><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Branch access</th><th>Status</th><th></th></tr></thead><tbody>
+    ${Store.users().map(u => `<tr><td><b>${esc(u.name)}</b></td><td class="mono">${esc(u.username)}</td><td>${u.role === "manager" ? `<span class="tag dark plain">Management</span>` : `<span class="tag plain">Branch staff</span>`}</td>
+      <td>${u.role === "manager" ? "All branches" : u.branches.map(BNAME).join(" & ")}${u.role !== "manager" && u.branches.length > 1 ? ' <span class="tag amber plain">Extra access</span>' : ""}</td>
+      <td>${u.active ? `<span class="tag green">Active</span>` : `<span class="tag grey">Deactivated</span>`}</td>
+      <td class="num"><button class="btn sm ghost" data-user="${u.id}">Edit</button></td></tr>`).join("")}
+    </tbody></table></div></section>
+    <p class="lock-note" style="margin-top:12px">${Console.ICON.lock} Every sign-in and account change is recorded in the activity log.</p>`;
+BIND.staff = () => {
+  const edit = async u => {
+    const isNew = !u; u = u || { name:"", username:"", pin:"", role:"staff", branches:["allen"], active:true };
+    const r = await UI.dialog({ title:isNew ? "Add account" : "Edit " + u.name, ok:isNew ? "Create account" : "Save changes", fields:[
+      { name:"name", label:"Full name", value:u.name, required:true },
+      { name:"username", label:"Username", value:u.username, required:true, validate:v => Store.users().some(x => x.username.toLowerCase() === v.toLowerCase() && x.id !== u.id) ? "Username already taken" : "" },
+      { name:"pin", label:"4-digit PIN", value:u.pin, required:true, validate:v => /^\d{4}$/.test(v) ? "" : "Use exactly 4 digits" },
+      { name:"role", label:"Role", type:"select", value:u.role, options:[["staff","Branch staff"],["manager","Management"]] },
+      { name:"branches", label:"Branch access", type:"checks", value:u.branches, required:true, options:[["allen","Allen"],["ikeja","Ikeja"]] },
+      { name:"active", label:"Account active", type:"check", value:u.active }
+    ]});
+    if(!r) return;
+    if(!isNew && u.id === user.id && (!r.active || r.role !== "manager")){ UI.toast("You can't remove your own management access"); return; }
+    Store.saveUser(Object.assign({}, u, r, { branches:r.role === "manager" ? ["allen","ikeja"] : r.branches }), user);
+    UI.toast(isNew ? "Account created" : "Account updated"); show("staff", true);
+  };
+  $("addUser").onclick = () => edit(null);
+  $("view").addEventListener("click", e => { const b = e.target.closest("[data-user]"); if(b) edit(Store.users().find(u => u.id === b.dataset.user)); });
+};
+
+/* ---------- activity ---------- */
+const AF = { kind:"all", branch:"all" };
+VIEWS.activity = () => {
+  const groups = { all:"Everything", order:"Orders", print:"Printing", menu:"Menu & prices", access:"Logins & accounts", settings:"Settings" };
+  const match = a => AF.kind === "all" || (AF.kind === "order" ? ["status","cancel"].includes(a.kind) : AF.kind === "print" ? ["print","reprint","printer"].includes(a.kind) : AF.kind === "access" ? ["login","user"].includes(a.kind) : a.kind === AF.kind);
+  const list = Store.activity().filter(a => match(a) && (AF.branch === "all" || a.branch === AF.branch || a.branch === "both" || String(a.branch).includes(AF.branch)));
+  return head("Activity log", "Automatic, protected record of every status change, print, menu edit and login.", `<button class="btn sm ghost" id="exportLog">Export to Excel</button>`)
+    + `<div class="panel" style="padding:14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <div class="chips">${Object.entries(groups).map(([k, l]) => `<button class="chip${AF.kind === k ? " on" : ""}" data-kind="${k}">${l}</button>`).join("")}</div>
+        <div style="margin-left:auto">${seg("aBranch", [["all","Both"],["allen","Allen"],["ikeja","Ikeja"]], AF.branch)}</div></div>
+      <section class="panel" style="padding:8px"><div class="table-wrap"><table class="t"><thead><tr><th>When</th><th>Who</th><th>Branch</th><th>What happened</th></tr></thead><tbody>
+        ${list.slice(0, 300).map(a => `<tr${a.order ? ` class="click" data-open="${a.order}"` : ""}><td class="muted" style="white-space:nowrap">${UI.dateTime(a.at)}</td><td><b>${esc(a.by.name)}</b>${a.by.role && a.by.role !== "customer" && a.by.role !== "system" ? `<br><span class="muted small">${a.by.role}</span>` : ""}</td><td>${a.branch === "both" ? "Both" : String(a.branch).split(",").map(b => Store.branch(b) ? BNAME(b) : b).join(", ")}</td><td>${esc(a.text)}</td></tr>`).join("")}
+      </tbody></table></div><p class="lock-note" style="padding:8px 12px">${Console.ICON.lock} Read-only. Nobody, including management, can edit or delete entries.</p></section>`;
+};
+BIND.activity = () => {
+  $("view").addEventListener("click", e => { const k = e.target.closest("[data-kind]"); if(k){ AF.kind = k.dataset.kind; show("activity", true); } });
+  onSeg("aBranch", v => { AF.branch = v; show("activity", true); });
+  $("exportLog").onclick = () => { UI.downloadCSV("commint-buka-activity.csv", [["Date","Time","Who","Role","Branch","Order","Event"], ...Store.activity().map(a => [UI.date(a.at), UI.time(a.at), a.by.name, a.by.role || "", a.branch, a.order, a.text])]); UI.toast("Excel file downloaded"); };
+};
+
+/* ---------- settings ---------- */
+VIEWS.settings = () => {
+  const d = Store.delays(), S = Store.STATUS;
+  const zones = b => `<section class="panel"><div class="panel-title"><h3>${BNAME(b)} · delivery zones</h3><button class="btn sm ghost" data-addzone="${b}">Add area</button></div>
+    <table class="t"><thead><tr><th>Area</th><th class="num">Fee (₦)</th><th>Time</th><th></th></tr></thead><tbody id="z-${b}">
+    ${Store.branch(b).zones.map(z => `<tr><td><input class="input" style="height:36px" value="${esc(z.area)}" data-z="area"></td><td class="num"><input class="price-in" value="${z.fee}" data-z="fee"></td><td><input class="input" style="height:36px;width:110px" value="${esc(z.eta)}" data-z="eta"></td><td><button class="icon-btn" data-delzone aria-label="Remove">${Console.ICON.close}</button></td></tr>`).join("")}
+    </tbody></table><div style="margin-top:12px;text-align:right"><button class="btn sm" data-savezones="${b}">Save ${BNAME(b)} zones</button></div></section>`;
+  return head("Settings", "Delay limits and delivery areas. Changes apply immediately.")
+    + `<section class="panel" style="margin-bottom:18px"><div class="panel-title"><h3>Delay alerts</h3><span class="muted small">Flag an order when it stays in a stage longer than:</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px">
+        ${Object.keys(Store.delays()).map(k => `<label class="field" style="margin:0"><span>${S[k].label}</span><div style="display:flex;align-items:center;gap:8px"><input class="input" data-delay="${k}" value="${d[k]}" inputmode="numeric" style="width:90px"> <span class="muted small">minutes</span></div></label>`).join("")}
+      </div><div style="margin-top:14px;text-align:right"><button class="btn sm" id="saveDelays">Save delay limits</button></div>
+      <p class="muted small">Tip for the demo: set “Confirmed” to 1 minute, confirm an order, and watch it get flagged on both dashboards.</p></section>
+      <div class="grid2">${zones("allen")}${zones("ikeja")}</div>
+      <section class="panel"><div class="panel-title"><h3>Demo data</h3></div>
+        <p class="muted" style="font-size:14px;margin-bottom:12px">Restore the sample orders, menu, accounts and settings. Useful before showing the demo to someone new.</p>
+        <button class="btn danger" id="resetDemo">Reset demo data</button></section>`;
+};
+BIND.settings = () => {
+  $("saveDelays").onclick = () => {
+    const delays = {}; let bad = false;
+    document.querySelectorAll("[data-delay]").forEach(i => { const v = +i.value; if(!(v >= 1 && v <= 600)) bad = true; delays[i.dataset.delay] = v; });
+    if(bad){ UI.toast("Use minutes between 1 and 600"); return; }
+    Store.saveSettings({ delays }, user, "Delay limits changed: " + Object.entries(delays).map(([k, v]) => `${Store.STATUS[k].label} ${v} min`).join(", "));
+    UI.toast("Delay limits saved");
+  };
+  $("view").addEventListener("click", async e => {
+    const add = e.target.closest("[data-addzone]");
+    if(add){ $("z-" + add.dataset.addzone).insertAdjacentHTML("beforeend", `<tr><td><input class="input" style="height:36px" data-z="area" placeholder="Area name"></td><td class="num"><input class="price-in" data-z="fee" value="1000"></td><td><input class="input" style="height:36px;width:110px" data-z="eta" value="30–45 min"></td><td><button class="icon-btn" data-delzone aria-label="Remove">${Console.ICON.close}</button></td></tr>`); return; }
+    const del = e.target.closest("[data-delzone]"); if(del){ del.closest("tr").remove(); return; }
+    const sv = e.target.closest("[data-savezones]");
+    if(sv){
+      const b = sv.dataset.savezones, rows = [...$("z-" + b).querySelectorAll("tr")].map(tr => ({ area:tr.querySelector('[data-z="area"]').value.trim(), fee:+tr.querySelector('[data-z="fee"]').value.replace(/[^\d]/g, ""), eta:tr.querySelector('[data-z="eta"]').value.trim() || "30–45 min" }));
+      if(!rows.length || rows.some(z => !z.area || !(z.fee >= 0))){ UI.toast("Every area needs a name and a fee"); return; }
+      const zones = Object.assign({}, Store.settings().zones, { [b]:rows });
+      Store.saveSettings({ zones }, user, `${BNAME(b)} delivery zones updated: ${rows.map(z => z.area + " " + naira(z.fee)).join(", ")}`);
+      UI.toast(`${BNAME(b)} delivery zones saved`);
+      return;
+    }
+    if(e.target.closest("#resetDemo")){
+      const ok = await UI.dialog({ title:"Reset demo data?", body:"All orders placed during the demo, menu changes, accounts and settings go back to the starting sample data.", ok:"Reset everything", okClass:"rose" });
+      if(ok){ Store.reset(); Store.logout("manager"); location.href = "admin.html"; }
+    }
+  });
+};
+
+/* ---------- rush test ---------- */
+VIEWS.rush = () => head("Rush test", "Acceptance check from the proposal: 30 orders in five minutes must not be lost or misrouted.")
+  + `<div class="rush-box">
+      <section class="panel">
+        <div class="panel-title"><h3>Run the test</h3></div>
+        <p class="muted" style="font-size:14px;line-height:1.6;margin-bottom:14px">Fires orders at random to both branches, then checks that every order exists exactly once and sits in the right branch's queue. Open <a href="staff.html" target="_blank" style="color:var(--rose);font-weight:800">the staff dashboard</a> as Allen and Ikeja in two other tabs to watch them arrive and print.</p>
+        <div class="row2">
+          <label class="field"><span>Number of orders</span><input class="input" id="rN" value="30" inputmode="numeric"></label>
+          <label class="field"><span>Spread over</span><select class="select" id="rT"><option value="20000">20 seconds (fast demo)</option><option value="60000" selected>1 minute</option><option value="300000">5 minutes (real time)</option></select></label>
+        </div>
+        <button class="btn block" id="rGo">Start rush test</button>
+        <div class="progress"><i id="rBar"></i></div>
+        <div class="result" id="rCount">
+          <div><b id="cAll">0</b><small>Created</small></div><div><b id="cAl" style="color:${COL.allen}">0</b><small>Allen</small></div><div><b id="cIk" style="color:${COL.ikeja}">0</b><small>Ikeja</small></div>
+        </div>
+        <div id="rResult"></div>
+      </section>
+      <section class="panel"><div class="panel-title"><h3>Live feed</h3><span class="muted small" id="rStatus">Waiting to start</span></div><div class="feed" id="rFeed"><p class="muted small">Orders will appear here as they are placed.</p></div></section>
+    </div>`;
+BIND.rush = () => {
+  $("rGo").onclick = async () => {
+    const n = Math.max(1, Math.min(100, +$("rN").value || 30)), ms = +$("rT").value;
+    rushing = true; $("rGo").disabled = true; $("rResult").innerHTML = ""; $("rFeed").innerHTML = "";
+    let al = 0, ik = 0; const t0 = Date.now();
+    Store.log(user, "settings", `Rush test started: ${n} orders over ${Math.round(ms / 1000)} s`, "both");
+    const made = await Store.rush(n, ms, (i, o) => {
+      o.branch === "allen" ? al++ : ik++;
+      $("cAll").textContent = i; $("cAl").textContent = al; $("cIk").textContent = ik;
+      $("rBar").style.width = (i / n * 100) + "%"; $("rStatus").textContent = `${i} of ${n} · ${Math.round((Date.now() - t0) / 1000)} s`;
+      $("rFeed").insertAdjacentHTML("afterbegin", `<div><span class="muted">${UI.time(o.createdAt)}</span><b class="mono">${o.id}</b><span style="color:${COL[o.branch]};font-weight:800">→ ${BNAME(o.branch)}</span><span class="muted" style="margin-left:auto">${naira(o.total)}</span></div>`);
+    });
+    const r = Store.verifyRush(made);
+    Store.log(user, "settings", `Rush test finished: ${r.total} orders, ${r.lost} lost, ${r.misrouted} misrouted, ${r.dupes} duplicates`, "both");
+    $("rStatus").textContent = `Finished in ${Math.round((Date.now() - t0) / 1000)} s`;
+    $("rResult").innerHTML = `<div class="result"><div class="${r.lost ? "bad" : "ok"}"><b>${r.lost}</b><small>Lost</small></div><div class="${r.misrouted ? "bad" : "ok"}"><b>${r.misrouted}</b><small>Misrouted</small></div><div class="${r.dupes ? "bad" : "ok"}"><b>${r.dupes}</b><small>Duplicates</small></div></div>
+      ${!r.lost && !r.misrouted && !r.dupes ? `<div class="pass"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Passed: all ${r.total} orders stored once and routed to the right branch (Allen ${r.byBranch.allen}, Ikeja ${r.byBranch.ikeja}).</div>` : `<div class="alert red">Some orders failed the check.</div>`}`;
+    $("rGo").disabled = false; rushing = false; badge();
+  };
+};
+
+/* order drawer from anywhere */
+document.addEventListener("click", e => {
+  const o = e.target.closest("[data-open]"); if(o && !e.target.closest("[data-act]")){ Console.open(o.dataset.open); return; }
+  const g = e.target.closest("[data-goto]"); if(g) show(g.dataset.goto);
+});
+
+if(user) start(); else { $("loginView").hidden = false; $("lUser").focus(); }
+</script>
+</body>
+</html>
