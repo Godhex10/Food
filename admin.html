@@ -109,7 +109,7 @@ function badge(){
   $("alertBadge").hidden = !n; $("alertBadge").textContent = n;
 }
 const head = (title, sub, tools = "") => `<div class="view-head"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div><div class="tools">${tools}</div></div>`;
-const seg = (id, opts, cur) => `<div class="seg" id="${id}" style="height:38px;padding:3px">${opts.map(([v, l]) => `<button data-v="${v}" class="${v === cur ? "on" : ""}" style="height:32px;padding:0 12px;font-size:12.5px">${l}</button>`).join("")}</div>`;
+const seg = (id, opts, cur) => `<div class="seg" id="${id}" style="height:38px;padding:3px">${opts.map(([v, l]) => `<button data-v="${v}" class="${v === cur ? "on" : ""}" style="height:32px;padding:0 12px;font-size:11.5px">${l}</button>`).join("")}</div>`;
 function onSeg(id, fn){ $(id).addEventListener("click", e => { const b = e.target.closest("[data-v]"); if(b) fn(b.dataset.v); }); }
 const revenueOf = list => list.filter(o => o.status !== "cancelled" && o.payment.status === "paid").reduce((s, o) => s + o.total, 0);
 
@@ -370,7 +370,7 @@ VIEWS.settings = () => {
       <p class="muted small">Tip for the demo: set “Confirmed” to 1 minute, confirm an order, and watch it get flagged on both dashboards.</p></section>
       <div class="grid2">${zones("allen")}${zones("ikeja")}</div>
       <section class="panel"><div class="panel-title"><h3>Demo data</h3></div>
-        <p class="muted" style="font-size:14px;margin-bottom:12px">Restore the sample orders, menu, accounts and settings. Useful before showing the demo to someone new.</p>
+        <p class="muted" style="font-size:12.5px;margin-bottom:12px">Restore the sample orders, menu, accounts and settings. Useful before showing the demo to someone new.</p>
         <button class="btn danger" id="resetDemo">Reset demo data</button></section>`;
 };
 BIND.settings = () => {
@@ -406,7 +406,7 @@ VIEWS.rush = () => head("Rush test", "Acceptance check from the proposal: 30 ord
   + `<div class="rush-box">
       <section class="panel">
         <div class="panel-title"><h3>Run the test</h3></div>
-        <p class="muted" style="font-size:14px;line-height:1.6;margin-bottom:14px">Fires orders at random to both branches, then checks that every order exists exactly once and sits in the right branch's queue. Open <a href="staff.html" target="_blank" style="color:var(--rose);font-weight:800">the staff dashboard</a> as Allen and Ikeja in two other tabs to watch them arrive and print.</p>
+        <p class="muted" style="font-size:12.5px;line-height:1.6;margin-bottom:14px">Fires orders at random to both branches, then checks that every order exists exactly once and sits in the right branch's queue. Open <a href="staff.html" target="_blank" style="color:var(--rose);font-weight:700">the staff dashboard</a> as Allen and Ikeja in two other tabs to watch them arrive and print.</p>
         <div class="row2">
           <label class="field"><span>Number of orders</span><input class="input" id="rN" value="30" inputmode="numeric"></label>
           <label class="field"><span>Spread over</span><select class="select" id="rT"><option value="20000">20 seconds (fast demo)</option><option value="60000" selected>1 minute</option><option value="300000">5 minutes (real time)</option></select></label>
@@ -430,7 +430,7 @@ BIND.rush = () => {
       o.branch === "allen" ? al++ : ik++;
       $("cAll").textContent = i; $("cAl").textContent = al; $("cIk").textContent = ik;
       $("rBar").style.width = (i / n * 100) + "%"; $("rStatus").textContent = `${i} of ${n} · ${Math.round((Date.now() - t0) / 1000)} s`;
-      $("rFeed").insertAdjacentHTML("afterbegin", `<div><span class="muted">${UI.time(o.createdAt)}</span><b class="mono">${o.id}</b><span style="color:${COL[o.branch]};font-weight:800">→ ${BNAME(o.branch)}</span><span class="muted" style="margin-left:auto">${naira(o.total)}</span></div>`);
+      $("rFeed").insertAdjacentHTML("afterbegin", `<div><span class="muted">${UI.time(o.createdAt)}</span><b class="mono">${o.id}</b><span style="color:${COL[o.branch]};font-weight:700">→ ${BNAME(o.branch)}</span><span class="muted" style="margin-left:auto">${naira(o.total)}</span></div>`);
     });
     const r = Store.verifyRush(made);
     Store.log(user, "settings", `Rush test finished: ${r.total} orders, ${r.lost} lost, ${r.misrouted} misrouted, ${r.dupes} duplicates`, "both");

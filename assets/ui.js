@@ -108,7 +108,7 @@ const UI = (() => {
     return new Promise(resolve => {
       const scrim = document.createElement("div"); scrim.className = "scrim";
       const wrap = document.createElement("div"); wrap.className = "modal";
-      wrap.innerHTML = `<form class="modal-card" novalidate><h3>${esc(title)}</h3>${body ? `<p class="muted" style="font-size:14px;line-height:1.5;margin-bottom:14px">${body}</p>` : ""}
+      wrap.innerHTML = `<form class="modal-card" novalidate><h3>${esc(title)}</h3>${body ? `<p class="muted" style="font-size:12.5px;line-height:1.5;margin-bottom:14px">${body}</p>` : ""}
         ${fields.map(f => fieldHTML(f)).join("")}
         <div class="modal-actions">${cancel ? `<button type="button" class="btn ghost" data-x>${esc(cancel)}</button>` : ""}<button class="btn ${okClass}">${esc(ok)}</button></div></form>`;
       document.body.append(scrim, wrap);

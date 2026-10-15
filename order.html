@@ -10,39 +10,39 @@
 <link rel="stylesheet" href="assets/app.css">
 <style>
   .page{padding:clamp(24px,4vw,44px) 0 80px}
-  .hero{position:relative;overflow:hidden;display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:clamp(22px,4vw,34px);border-radius:28px;background:var(--ink);color:#fff;margin-bottom:22px}
+  .hero{position:relative;overflow:hidden;display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:clamp(22px,4vw,34px);border-radius:22px;background:var(--ink);color:#fff;margin-bottom:22px}
   .hero::before{content:"";position:absolute;width:520px;height:150px;right:-120px;top:30%;border-radius:50%;background:rgba(246,185,211,.18);filter:blur(10px);transform:rotate(-24deg)}
   .hero .tick{width:58px;height:58px;border-radius:50%;background:var(--rose-2);display:grid;place-items:center;flex:none;position:relative;animation:pop .5s cubic-bezier(.3,1.5,.5,1)}
   .hero .tick svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-  .hero h1{font-size:clamp(20px,3vw,28px);font-weight:900;line-height:1.15;position:relative}
-  .hero p{opacity:.75;font-size:14px;margin-top:4px;position:relative}
+  .hero h1{font-size:clamp(18px,2.5vw,25px);font-weight:800;line-height:1.15;position:relative}
+  .hero p{opacity:.75;font-size:12.5px;margin-top:4px;position:relative}
   .hero .oid{position:relative;margin-left:auto;text-align:right}
-  .hero .oid small{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.6}
-  .hero .oid b{font-family:ui-monospace,Consolas,monospace;font-size:clamp(18px,2.6vw,24px);letter-spacing:.04em}
+  .hero .oid small{display:block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+  .hero .oid b{font-family:ui-monospace,Consolas,monospace;font-size:clamp(16px,2.5vw,21.5px);letter-spacing:.04em}
   .hero .oid .copy{margin-top:6px}
   .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
   .col{display:grid;gap:20px}
   .status-now{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-  .status-now h2{font-size:22px}
+  .status-now h2{font-size:20px}
   .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-  .meta div{padding:12px 14px;border-radius:14px;background:#fff;font-size:13px}
-  .meta small{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
-  .meta b{font-size:14px;line-height:1.4}
-  .paid{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--green-soft);color:#1d6b3e;font-weight:800;font-size:14px}
+  .meta div{padding:12px 14px;border-radius:14px;background:#fff;font-size:11.5px}
+  .meta small{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+  .meta b{font-size:12.5px;line-height:1.4}
+  .paid{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--green-soft);color:#1d6b3e;font-weight:700;font-size:12.5px}
   .paid svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-  .cancelled{padding:14px;border-radius:16px;background:var(--red-soft);color:var(--red);font-weight:800;font-size:14px;line-height:1.5}
-  .phone{border-radius:26px;background:#1e1e20;padding:14px;box-shadow:0 20px 40px rgba(0,0,0,.15)}
+  .cancelled{padding:14px;border-radius:16px;background:var(--red-soft);color:var(--red);font-weight:700;font-size:12.5px;line-height:1.5}
+  .phone{border-radius:20.5px;background:#1e1e20;padding:14px;box-shadow:0 20px 40px rgba(0,0,0,.15)}
   .phone-top{display:flex;align-items:center;gap:10px;color:#fff;padding:4px 6px 12px}
-  .phone-top .av{width:34px;height:34px;border-radius:50%;background:var(--rose-2);display:grid;place-items:center;font-weight:900;font-size:12px}
-  .phone-top b{font-size:13.5px;display:block}
-  .phone-top small{font-size:11px;opacity:.6}
+  .phone-top .av{width:34px;height:34px;border-radius:50%;background:var(--rose-2);display:grid;place-items:center;font-weight:800;font-size:11px}
+  .phone-top b{font-size:12px;display:block}
+  .phone-top small{font-size:10px;opacity:.6}
   .phone .sms{max-height:360px;overflow-y:auto;padding:4px}
   .phone .sms-msg{background:#2c2c2f;color:#f1f1f1;box-shadow:none}
   .phone .sms-msg.newest{background:#3a3a3e}
   .phone .sms-msg small{color:#9a9a9e}
   .lookup{max-width:520px;margin:0 auto}
   .recent{display:grid;gap:8px;margin-top:18px}
-  .recent a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;background:#fff;font-size:13.5px;font-weight:700;transition:transform .15s}
+  .recent a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;background:#fff;font-size:12px;font-weight:700;transition:transform .15s}
   .recent a:hover{transform:translateX(3px)}
   @keyframes pop{from{transform:scale(.4);opacity:0}}
   @media (max-width:900px){ .grid{grid-template-columns:1fr} .hero .oid{margin-left:0;text-align:left} }
@@ -60,7 +60,7 @@
   <div class="wrap">
     <!-- lookup (no id in the URL) -->
     <section id="lookup" class="lookup" hidden>
-      <h1 class="sec-title" style="font-size:clamp(30px,4.6vw,48px);margin-bottom:18px"><span class="l1">TRACK</span> <span class="l2">ORDER</span></h1>
+      <h1 class="sec-title" style="font-size:clamp(27px,4vw,43px);margin-bottom:18px"><span class="l1">TRACK</span> <span class="l2">ORDER</span></h1>
       <form class="panel" id="lookupForm" novalidate>
         <label class="field" data-f="lid"><span>Order number</span><input class="input mono" id="lid" placeholder="e.g. CB-AL-261014-004" autocomplete="off"><div class="errmsg"></div></label>
         <label class="field" data-f="lphone"><span>Phone number used for the order</span><input class="input" id="lphone" type="tel" placeholder="0803 123 4567"><div class="errmsg"></div></label>
